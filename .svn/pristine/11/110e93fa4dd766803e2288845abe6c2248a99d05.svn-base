@@ -1,0 +1,102 @@
+package com.xy.wwoa.approval.service;
+
+import com.xy.wwoa.approval.api.InterchangeableApprovalList;
+import com.xy.wwoa.approval.api.InterchangeableApprovalModal;
+import com.xy.wwoa.approval.mapper.InterchangeableApprovalMapper;
+import com.xy.wwoa.approval.model.InterchangeableApproval;
+import com.xy.wwoa.approval.util.ApprovalNumberDevice;
+import com.xy.wwoa.common.config.FileConfig;
+import com.xy.wwoa.employee.mapper.OrganizationMapper;
+import com.xy.wwoa.employee.model.Employee;
+import com.xy.wwoa.employee.service.EmployeeService;
+import com.xy.wwoa.setting.api.IncreasedTaxRateList;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * @Author leisurexi
+ * @Description
+ * @Date 2019/8/31
+ * @Time 15:27
+ */
+@Service
+public class InterchangeableApprovalService {
+
+    @Resource
+    private InterchangeableApprovalMapper interchangeableApprovalMapper;
+
+    @Resource
+    private OrganizationMapper organizationMapper;
+
+    @Resource
+    private EmployeeService employeeService;
+
+    @Resource
+    private ApprovalProcessService approvalProcessService;
+
+    @Resource
+    private FileConfig fileConfig;
+
+    public InterchangeableApproval getByApprovalNumber(String approvalNumber) {
+        return interchangeableApprovalMapper.findByApprovalNumber(approvalNumber);
+    }
+
+    /**
+     * 保存通用审批信息
+     */
+    @Transactional
+    public boolean save(Employee employee, InterchangeableApproval interchangeableApproval, Integer approvalTypeId) {
+        employee = employeeService.getById(employee.getId());
+        String approvalNumber = ApprovalNumberDevice.createApprovalNumber();
+        interchangeableApproval.setApprovalNumber(approvalNumber);
+        interchangeableApproval.setOrganizationId(employee.getOrganizationId());
+        interchangeableApproval.setJobId(employee.getJobId());
+        interchangeableApproval.setCreateUser(employee.getId());
+        interchangeableApproval.setCreateTime(LocalDateTime.now());
+        interchangeableApproval.setStatus(0);
+        //保存通用审批信息
+        interchangeableApprovalMapper.save(interchangeableApproval);
+        //保存审批流程信息
+        approvalProcessService.save(employee.getId(), approvalNumber, interchangeableApproval.getApproverIds(), approvalTypeId);
+        return true;
+    }
+
+    /**
+     * 分页获取通用审批信息
+     */
+    public InterchangeableApprovalList listInterchangeableApproval(Integer organizationId, String employeeName, String applyContent, Integer page, Integer size){
+        long total = interchangeableApprovalMapper.countInterchangeableApproval(organizationId, employeeName, applyContent);
+        List<InterchangeableApproval> interchangeableApprovalList = interchangeableApprovalMapper.listInterchangeableApproval(organizationId, employeeName, applyContent, (page - 1) * size,page * size);
+
+        List<InterchangeableApprovalModal> interchangeableApprovalModalList = interchangeableApprovalList.stream().map(interchangeableApproval -> {
+            Employee employee = employeeService.getById(interchangeableApproval.getCreateUser());
+            String[] imgs = interchangeableApproval.getImgs() != null ? interchangeableApproval.getImgs().split(",") : new String[0];
+            String imgPaths = "";
+            for (String img : imgs) {
+                imgPaths += fileConfig.getImgUrlPrefix() + img + ",";
+            }
+            interchangeableApproval.setImgs(imgPaths.substring(0, imgPaths.length() - 1));
+            InterchangeableApprovalModal interchangeableApprovalModal = InterchangeableApprovalModal.builder()
+                    .approvalNumber(interchangeableApproval.getApprovalNumber())
+                    .organizationName(organizationMapper.findById(employee.getOrganizationId()).getOrganizationName())
+                    .employeeName(employee.getEmployeeName())
+                    .createTime(interchangeableApproval.getCreateTime())
+                    .applyContent(interchangeableApproval.getApplyContent())
+                    .imgs(imgPaths.substring(0, imgPaths.length() - 1))
+                    .build();
+            return interchangeableApprovalModal;
+        }).collect(Collectors.toList());
+
+        return InterchangeableApprovalList.builder()
+                .list(interchangeableApprovalModalList)
+                .page(page)
+                .total(total)
+                .build();
+    }
+
+}

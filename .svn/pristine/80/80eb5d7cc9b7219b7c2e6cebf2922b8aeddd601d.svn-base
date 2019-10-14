@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.approval.mapper.ContractApprovalMapper">
+
+    <insert id="save">
+        insert into wwoa_contract_approval values(#{approvalNumber}, #{employeeId}, #{organizationId}, #{jobId},
+         #{maturityTime}, #{formalSalary}, #{workShow}, #{performance}, #{approverIds}, #{ccIds}, #{createUser},
+         #{createTime}, #{status}, #{remark})
+    </insert>
+
+    <select id="findByApprovalNumber" resultType="com.xy.wwoa.approval.model.ContractApproval">
+        select contract_approval.*, employee.employeeName as createUserName from wwoa_contract_approval as contract_approval
+        left outer join ww_employee as employee on contract_approval.createUser = employee.id
+        where contract_approval.approvalNumber = #{approvalNumber}
+    </select>
+
+    <select id="countContractApproval" resultType="long">
+        select count(*) from wwoa_contract_approval as contract_approval left join ww_employee as employee
+        on contract_approval.employeeId = employee.id
+        <where>
+            <if test="organizationId != null">
+                and employee.organizationId = #{organizationId}
+            </if>
+            <if test="jobId != null">
+                and employee.jobId = #{jobId}
+            </if>
+            <if test="employeeName != null">
+                and employee.name like '%' + #{employeeName} + '%'
+            </if>
+            <if test="telephone != null">
+                and employee.telephone like '%' + #{telephone} + '%'
+            </if>
+            <if test="status != null">
+                and contract_approval.status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="listContractApproval" resultType="com.xy.wwoa.approval.model.ContractApproval">
+        select * from (
+        select top ${size} contract_approval.*, employee.employeeName as employeeName,
+        ROW_NUMBER() OVER(Order by contract_approval.id) as rowNumber
+        from wwoa_contract_approval as contract_approval left join ww_employee as employee on contract_approval.employeeId = employee.id
+        left join ww_organization as organization on contract_approval.organizationId = organization.id
+        left join ww_province as province on contract_approval.jobId = province.id
+        <where>
+            <if test="organizationId != null">
+                and contract_approval.organizationId = #{organizationId}
+            </if>
+            <if test="jobId != null">
+                and contract_approval.jobId = #{jobId}
+            </if>
+            <if test="employeeName != null">
+                and employee.name like '%' + #{employeeName} + '%'
+            </if>
+            <if test="telephone != null">
+                and employee.telephone like '%' + #{telephone} + '%'
+            </if>
+            <if test="status != null">
+                and contract_approval.status = #{status}
+            </if>
+        </where>
+        ) as T where rowNumber > #{page} ORDER BY rowNumber
+    </select>
+
+</mapper>

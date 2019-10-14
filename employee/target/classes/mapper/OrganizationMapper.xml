@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.employee.mapper.OrganizationMapper">
+
+    <!--  查询全部状态为正常的  -->
+    <select id="findAll" resultType="com.xy.wwoa.employee.model.Organization">
+        select * from ww_organization where isDel = 0
+    </select>
+
+    <select id="findById" resultType="com.xy.wwoa.employee.model.Organization">
+        select * from ww_organization where iSDel = 0 and id = #{id}
+    </select>
+
+</mapper>

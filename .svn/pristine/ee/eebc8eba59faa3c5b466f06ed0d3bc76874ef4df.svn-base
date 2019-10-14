@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.approval.mapper.PerformanceAppraisalMapper">
+
+    <insert id="save">
+        insert into wwoa_performance_appraisal(approvalNumber,employeeId,organizationId,jobId,lastWorkTask,realityWorkTask,
+        taskCompleteRate,lastWorkAppraisal,workTask,workPlan,approverIds,ccIds,createUser,createTime,status,remark)
+        values(#{approvalNumber},#{employeeId},#{organizationId},#{jobId},#{lastWorkTask},#{realityWorkTask},
+        #{taskCompleteRate},#{lastWorkAppraisal},#{workTask},#{workPlan},#{approverIds},#{ccIds},#{createUser},#{createTime},#{status},#{remark})
+    </insert>
+
+    <select id="findByApprovalNumber" resultType="com.xy.wwoa.approval.model.PerformanceAppraisal">
+        select wwoa_performance_appraisal.*, employee.employeeName as createUserName
+        from wwoa_performance_appraisal as wwoa_performance_appraisal
+        left outer join ww_employee as employee on wwoa_performance_appraisal.createUser = employee.id
+        where wwoa_performance_appraisal.approvalNumber = #{approvalNumber}
+    </select>
+
+    <select id="listPerformanceAppraisal" resultType="com.xy.wwoa.approval.model.PerformanceAppraisal">
+        select * from (
+        select top ${size} performance_appraisal.*, ROW_NUMBER() OVER(Order by performance_appraisal.id) as rowNumber
+        from wwoa_performance_appraisal as performance_appraisal
+        left join ww_employee as employee on performance_appraisal.createUser = employee.id
+        <where>
+            <if test="organizationId != null">
+                and employee.organizationId = #{organizationId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee.employeeName like '%' + #{employeeName} + '%'
+            </if>
+        </where>
+        ) as T where rowNumber > #{page} ORDER BY rowNumber
+    </select>
+
+    <select id="countPerformanceAppraisal" resultType="java.lang.Long">
+        select count(*) from wwoa_performance_appraisal as performance_appraisal
+        left join ww_employee as employee on performance_appraisal.createUser = employee.id
+        <where>
+            <if test="organizationId != null">
+                and employee.organizationId = #{organizationId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee.employeeName like '%' + #{employeeName} + '%'
+            </if>
+        </where>
+    </select>
+
+</mapper>

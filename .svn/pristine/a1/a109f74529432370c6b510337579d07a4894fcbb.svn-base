@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.approval.mapper.LeaveApprovalMapper">
+
+    <insert id="save">
+        insert into wwoa_leave_approval(actualApplicantId,approvalNumber,leavingReason,leavingTime,workHandover,workHandoverEmployee,
+        approverIds,ccIds,createUser,createTime,status,remark)
+        values(#{actualApplicantId},#{approvalNumber}, #{leavingReason}, #{leavingTime}, #{workHandover}, #{workHandoverEmployee},
+        #{approverIds}, #{ccIds}, #{createUser}, #{createTime}, #{status}, #{remark})
+    </insert>
+
+    <update id="modifyStatus">
+        update wwoa_leave_approval set status = #{status} where approvalNumber = #{approvalNumber}
+    </update>
+
+    <select id="findByApprovalNumber" resultType="com.xy.wwoa.approval.model.LeaveApproval">
+        select wwoa_leave_approval.*, employee.employeeName as createUserName
+        from wwoa_leave_approval as wwoa_leave_approval
+        left outer join ww_employee as employee on wwoa_leave_approval.createUser = employee.id
+        where wwoa_leave_approval.approvalNumber = #{approvalNumber}
+    </select>
+
+    <select id="countLeaveApproval" resultType="java.lang.Long">
+        select count(*)
+        from wwoa_leave_approval as leave_approval
+        left join wwoa_employee_information as employee_information on leave_approval.actualApplicantId = employee_information.employeeId
+        <where>
+            <if test="organizationId != null">
+                and employee_information.organizationId = #{organizationId}
+            </if>
+            <if test="jobId != null">
+                and employee_information.jobId = #{jobId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee_information.name like '%' + #{employeeName} + '%'
+            </if>
+            <if test="idcard != null and idcard != ''">
+                and employee_information.idCard like '%' + #{idcard} + '%'
+            </if>
+            <if test="status != null">
+                and leave_approval.status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="listLeaveApproval" resultType="com.xy.wwoa.approval.model.LeaveApproval">
+        select * from (
+        select top ${size} leave_approval.*, ROW_NUMBER() OVER(Order by leave_approval.id) as rowNumber
+        from wwoa_leave_approval as leave_approval
+        left join wwoa_employee_information as employee_information on leave_approval.actualApplicantId = employee_information.employeeId
+        <where>
+            <if test="organizationId != null">
+                and employee_information.organizationId = #{organizationId}
+            </if>
+            <if test="jobId != null">
+                and employee_information.jobId = #{jobId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee_information.name like '%' + #{employeeName} + '%'
+            </if>
+            <if test="idcard != null and idcard != ''">
+                and employee_information.idCard like '%' + #{idcard} + '%'
+            </if>
+            <if test="status != null">
+                and leave_approval.status = #{status}
+            </if>
+        </where>
+        ) as T where rowNumber > #{page} ORDER BY rowNumber
+    </select>
+
+</mapper>

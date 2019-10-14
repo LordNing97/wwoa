@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.setting.mapper.CompanyMapper">
+
+    <insert id="save">
+        insert into wwoa_company(name,dutyParagraph,address,openingBank,accountNumber,status,remark,telephone)
+         values(#{name}, #{dutyParagraph}, #{address}, #{openingBank}, #{accountNumber}, #{status}, #{remark}, #{telephone})
+    </insert>
+
+    <update id="modify">
+        update wwoa_company set name = #{name}, dutyParagraph = #{dutyParagraph}, address = #{address}, openingBank = #{openingBank}, accountNumber = #{accountNumber},
+        telephone = #{telephone}, remark = #{remark} where id = #{id}
+    </update>
+
+    <update id="delete">
+        update wwoa_company set status = 2 where id = #{id}
+    </update>
+
+    <select id="listCompany" resultType="com.xy.wwoa.setting.model.Company">
+        select * from (
+        select top ${size} *, ROW_NUMBER() OVER(Order by id) as rowNumber from wwoa_company
+        <where>
+            <if test="name != null and name != ''">
+                and name like '%' + #{name} + '%'
+            </if>
+            <if test="address != null and address != ''">
+                and address like '%' + #{address} + '%'
+            </if>
+            and status = 1
+        </where>
+        ) as T where rowNumber > #{page} ORDER BY rowNumber
+    </select>
+
+    <select id="countCompany" resultType="java.lang.Long">
+        select count(*) from wwoa_company
+        <where>
+            <if test="name != null and name != ''">
+                and name like '%' + #{name} + '%'
+            </if>
+            <if test="address != null and address != ''">
+                and address like '%' + #{address} + '%'
+            </if>
+            and status = 1
+        </where>
+    </select>
+
+</mapper>

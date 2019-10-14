@@ -1,0 +1,13 @@
+server.port=8080
+#激活其他子配置文件
+spring.profiles.active=dev
+
+# mybatis
+mybatis.config-locations=classpath:mybatis/mybatis-config.xml
+mybatis.mapper-locations=classpath*:mapper/*.xml
+
+spring.jmx.enabled=false
+
+# swagger
+swagger.basePackage=com.xy.wwoa
+swagger.licenseUrl=http://www.xinyingruanjian.com

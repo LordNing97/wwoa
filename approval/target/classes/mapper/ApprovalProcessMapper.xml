@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.approval.mapper.ApprovalProcessMapper">
+
+    <insert id="save">
+        insert into wwoa_approval_process values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.sponsorId}, #{item.approvalNumber}, #{item.approverId}, #{item.approvalTime},
+            #{item.approvalTypeId}, #{item.approvalOpinion}, #{item.latest}, #{item.status}, #{item.remark})
+        </foreach>
+    </insert>
+
+    <update id="modifyStatus">
+        update wwoa_approval_process set status = #{status}, approvalOpinion = #{approvalOpinion}, approvalTime = #{approvalTime} where id = #{id} and latest = 1
+    </update>
+
+    <update id="modifyNextProcess">
+        update wwoa_approval_process set latest = 1 where approvalNumber = #{approvalNumber}
+        and id = (select top 1 id from wwoa_approval_process where approvalNumber = #{approvalNumber} and id > #{id})
+    </update>
+
+    <!--  把流程改为不是最新状态  -->
+    <update id="modifyNotLatest">
+        update wwoa_approval_process set latest = 0 where id = #{id}
+    </update>
+
+    <update id="modifyApproverId">
+        update wwoa_approval_process set approverId = #{approverId} where id = #{id}
+    </update>
+
+    <!--  查询待处理  -->
+    <select id="findPendingApproval" resultType="com.xy.wwoa.approval.model.ApprovalProcess">
+        select approval_process.*, employee.employeeName as approverName from wwoa_approval_process as approval_process left outer join
+        ww_employee as employee on approval_process.approverId = employee.id
+        where approval_process.approverId = #{employeeId} and approval_process.status = 0 and approval_process.latest = 1
+        <if test="approvalTypeId != null">
+            and approval_process.approvalTypeId = #{approvalTypeId}
+        </if>
+        order by approval_process.id desc
+    </select>
+
+    <!--  查询已处理  -->
+    <select id="processed" resultType="com.xy.wwoa.approval.model.ApprovalProcess">
+        select approval_process.*, employee.employeeName as approverName from wwoa_approval_process as approval_process left outer join
+        ww_employee as employee on approval_process.approverId = employee.id
+        where approval_process.approverId = #{employeeId} and ((approval_process.status > 0 and approval_process.latest
+        &lt; 1) or (approval_process.status > 0 and approval_process.latest = 1))
+        <if test="approvalTypeId != null">
+            and approval_process.approvalTypeId = #{approvalTypeId}
+        </if>
+        <if test="status != null and status > -1">
+            <choose>
+                <when test="status == 0">
+                    and approval_process.status = 0
+                </when>
+                <when test="status == 3">
+                    and approval_process.status = 3
+                </when>
+                <otherwise>
+                    and approval_process.status between 1 and 2
+                </otherwise>
+            </choose>
+        </if>
+        order by approval_process.id desc
+    </select>
+
+    <select id="findByApprovalNumberProcessed" resultType="com.xy.wwoa.approval.model.ApprovalProcess">
+        select approval_process.*, employee.employeeName as approverName
+        from wwoa_approval_process as approval_process
+        left outer join ww_employee as employee on approval_process.approverId = employee.id
+        where approval_process.latest = 0 and approval_process.approvalNumber = #{approvalNumber} and approval_process.status between 1 and 2
+        order by approval_process.id desc
+    </select>
+
+    <select id="findByApprovalNumber" resultType="com.xy.wwoa.approval.model.ApprovalProcess">
+        select approval_process.*, employee.employeeName as approverName from wwoa_approval_process as approval_process left outer join ww_employee as employee on approval_process.approverId = employee.id
+        where approval_process.approvalNumber = #{approvalNumber}
+    </select>
+
+    <!--根据审批编号查询最新的流程-->
+    <select id="findLatest" resultType="com.xy.wwoa.approval.model.ApprovalProcess">
+        select approval_process.*, employee.employeeName as approverName from wwoa_approval_process as approval_process left outer join
+        ww_employee as employee on approval_process.approverId = employee.id
+        where approval_process.approvalNumber = #{approvalNumber} and approval_process.latest = 1
+    </select>
+
+    <select id="findByEmployeeId" resultType="com.xy.wwoa.approval.model.ApprovalProcess">
+        select approval_process.*, employee.employeeName as approverName from wwoa_approval_process as approval_process left outer join
+        ww_employee as employee on approval_process.approverId = employee.id
+        where approval_process.sponsorId = #{employeeId} and approval_process.latest = 1
+        <if test="approvalTypeId != null">
+            and approval_process.approvalTypeId = #{approvalTypeId}
+        </if>
+        <if test="status != null and status > -1">
+            <choose>
+                <when test="status == 0">
+                    and approval_process.status = 0
+                </when>
+                <when test="status == 3">
+                    and approval_process.status = 3
+                </when>
+                <otherwise>
+                    and approval_process.status between 1 and 2
+                </otherwise>
+            </choose>
+        </if>
+        order by approval_process.id desc
+    </select>
+
+</mapper>

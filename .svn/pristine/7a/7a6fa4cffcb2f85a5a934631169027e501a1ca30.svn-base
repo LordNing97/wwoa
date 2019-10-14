@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="cdbd9917-64e7-4746-b2aa-b8497dcbdb46" name="Default Changelist" comment="===&gt; leisurexi">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/src/main/java/com/xy/wwoa/approval/api/ApprovalDetailModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/approval/src/main/java/com/xy/wwoa/approval/api/ApprovalDetailModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/src/main/java/com/xy/wwoa/approval/service/ApprovalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/approval/src/main/java/com/xy/wwoa/approval/service/ApprovalService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/ApprovalDetailModel$ApprovalDetailModelBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/ApprovalDetailModel$ApprovalDetailModelBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/ApprovalDetailModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/ApprovalDetailModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/ApprovalModel$ApprovalModelBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/ApprovalModel$ApprovalModelBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/ApprovalModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/ApprovalModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/EntryApprovalModel$EntryApprovalModelBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/EntryApprovalModel$EntryApprovalModelBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/EntryApprovalModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/api/EntryApprovalModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/controller/ApprovalController.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/controller/ApprovalController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/request/SaveEntryApprovalRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/request/SaveEntryApprovalRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/request/SavePerformanceAppraisalRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/request/SavePerformanceAppraisalRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/service/ApprovalService.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/service/ApprovalService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/service/EntryApprovalService.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/service/EntryApprovalService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/ContractApprovalStrategy.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/ContractApprovalStrategy.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/EntryApprovalStrategy.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/EntryApprovalStrategy.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/InterchangeableApprovalStrategy.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/InterchangeableApprovalStrategy.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/LeaveApprovalStrategy.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/LeaveApprovalStrategy.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/PerformanceAppraisalStrategy.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/PerformanceAppraisalStrategy.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/WorkSummaryStrategy.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/strategy/WorkSummaryStrategy.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/util/ApprovalUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/com/xy/wwoa/approval/util/ApprovalUtil.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/approval/target/classes/mapper/ApprovalProcessMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/approval/target/classes/mapper/ApprovalProcessMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/common.iml" beforeDir="false" afterPath="$PROJECT_DIR$/common/common.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee/target/classes/com/xy/wwoa/employee/controller/EmployeeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/employee/target/classes/com/xy/wwoa/employee/controller/EmployeeController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee/target/classes/com/xy/wwoa/employee/mapper/EmployeeInformationMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/employee/target/classes/com/xy/wwoa/employee/mapper/EmployeeInformationMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee/target/classes/com/xy/wwoa/employee/model/EmployeeInformation.class" beforeDir="false" afterPath="$PROJECT_DIR$/employee/target/classes/com/xy/wwoa/employee/model/EmployeeInformation.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee/target/classes/com/xy/wwoa/employee/service/EmployeeService.class" beforeDir="false" afterPath="$PROJECT_DIR$/employee/target/classes/com/xy/wwoa/employee/service/EmployeeService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee/target/classes/mapper/EmployeeInformationMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/employee/target/classes/mapper/EmployeeInformationMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee/target/classes/mapper/EmployeeMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/employee/target/classes/mapper/EmployeeMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/xy/wwoa/web/interceptor/AccessInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/java/com/xy/wwoa/web/interceptor/AccessInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/target/classes/com/xy/wwoa/web/interceptor/AccessInterceptor.class" beforeDir="false" afterPath="$PROJECT_DIR$/web/target/classes/com/xy/wwoa/web/interceptor/AccessInterceptor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/web/web.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/万维OA数据库.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/万维OA数据库.xlsx" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="premise@192.168.1.98" type="feb32156:DbDataSourceImpl" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="premise@192.168.1.98" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="premise@192.168.1.98" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="premise: schema" type="76f4a085:MysqlImplModel$Schema" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="XSLT Stylesheet" />
+        <option value="Mybatis" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1PxM6ZR3XpG0zIFcMf641V6xEAi" />
+  <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
+    <ConfirmationsSetting value="2" id="Add" />
+    <ConfirmationsSetting value="2" id="Remove" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="F:/IdeaProjects/homework_basics" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.xy.wwoa.common.util" />
+      <recent name="com.leisurexi.wwoa.web.config" />
+      <recent name="com.xy.wwoa.common.config" />
+      <recent name="com.leisurexi.wwoa.employee.interceptor" />
+      <recent name="com.xy.wwoa.common.interceptor" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Idea_Projects\wwoa\approval\src\main\resources\mapper" />
+      <recent name="D:\Idea_Projects\wwoa\web\src\main\resources" />
+      <recent name="D:\Idea_Projects\wwoa" />
+      <recent name="D:\Idea_Projects\wwoa\common\src\main\java\com\xy\wwoa\common" />
+      <recent name="D:\Idea_Projects\wwoa\common\src\main\java\com\xy\wwoa\common\exception" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.WebApplication">
+    <configuration name="ApprovalApplicationTests (2)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xy.wwoa.approval.ApprovalApplicationTests" />
+      <module name="approval" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.xy.wwoa.approval.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ApprovalApplicationTests (3)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xy.wwoa.approval.ApprovalApplicationTests" />
+      <module name="approval" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.xy.wwoa.approval.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ApprovalApplicationTests (4)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xy.wwoa.approval.ApprovalApplicationTests" />
+      <module name="approval" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.xy.wwoa.approval.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ApprovalApplicationTests (5)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xy.wwoa.approval.ApprovalApplicationTests" />
+      <module name="approval" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.xy.wwoa.approval.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ApprovalApplicationTests" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xy.wwoa.approval.ApprovalApplicationTests" />
+      <module name="approval" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.xy.wwoa.approval.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ApprovalApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="approval" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xy.wwoa.approval.ApprovalApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EmployeeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="employee" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xy.wwoa.employee.EmployeeApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SettingApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="setting" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xy.wwoa.setting.SettingApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WebApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="web" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.xy.wwoa.web.WebApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.ApprovalApplicationTests" />
+        <item itemvalue="Application.ApprovalApplicationTests (5)" />
+        <item itemvalue="Application.ApprovalApplicationTests (4)" />
+        <item itemvalue="Application.ApprovalApplicationTests (3)" />
+        <item itemvalue="Application.ApprovalApplicationTests (2)" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="allServicesViewState">
+      <serviceView>
+        <treeState>
+          <expand />
+          <select />
+        </treeState>
+      </serviceView>
+    </option>
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\Raytine\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\Idea_Projects\api" />
+          <option name="myCopyRoot" value="D:\Idea_Projects\api" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\Idea_Projects\api" />
+          <option name="myCopyRoot" value="D:\Idea_Projects\api" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cdbd9917-64e7-4746-b2aa-b8497dcbdb46" name="Default Changelist" comment="" />
+      <created>1566811119865</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1566811119865</updated>
+      <workItem from="1566811123870" duration="73000" />
+      <workItem from="1566811204600" duration="2743000" />
+      <workItem from="1566865902894" duration="4533000" />
+      <workItem from="1566880261508" duration="766000" />
+      <workItem from="1567155673616" duration="5655000" />
+      <workItem from="1567211706913" duration="26174000" />
+      <workItem from="1567384538140" duration="16239000" />
+      <workItem from="1567406213589" duration="15136000" />
+      <workItem from="1567471053636" duration="13493000" />
+    </task>
+    <task id="LOCAL-00060" summary="===&gt; leisurexi">
+      <created>1567393874720</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1567393874720</updated>
+    </task>
+    <task id="LOCAL-00061" summary="===&gt; leisurexi">
+      <created>1567396853671</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1567396853671</updated>
+    </task>
+    <task id="LOCAL-00062" summary="===&gt; leisurexi">
+      <created>1567396872247</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1567396872247</updated>
+    </task>
+    <task id="LOCAL-00063" summary="===&gt; leisurexi">
+      <created>1567396892860</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1567396892860</updated>
+    </task>
+    <task id="LOCAL-00064" summary="===&gt; leisurexi">
+      <created>1567396914315</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1567396914315</updated>
+    </task>
+    <task id="LOCAL-00065" summary="===&gt; leisurexi">
+      <created>1567396946078</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1567396946078</updated>
+    </task>
+    <task id="LOCAL-00066" summary="===&gt; leisurexi">
+      <created>1567396968748</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1567396968748</updated>
+    </task>
+    <task id="LOCAL-00067" summary="===&gt; leisurexi">
+      <created>1567396987555</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1567396987555</updated>
+    </task>
+    <task id="LOCAL-00068" summary="===&gt; leisurexi">
+      <created>1567398060861</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1567398060861</updated>
+    </task>
+    <task id="LOCAL-00069" summary="===&gt; leisurexi">
+      <created>1567403160844</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1567403160844</updated>
+    </task>
+    <task id="LOCAL-00070" summary="===&gt; leisurexi">
+      <created>1567403178444</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1567403178445</updated>
+    </task>
+    <task id="LOCAL-00071" summary="===&gt; leisurexi">
+      <created>1567403234973</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1567403234973</updated>
+    </task>
+    <task id="LOCAL-00072" summary="===&gt; leisurexi">
+      <created>1567403540831</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1567403540831</updated>
+    </task>
+    <task id="LOCAL-00073" summary="===&gt; leisurexi">
+      <created>1567403560631</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1567403560631</updated>
+    </task>
+    <task id="LOCAL-00074" summary="===&gt; leisurexi">
+      <created>1567403789615</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1567403789615</updated>
+    </task>
+    <task id="LOCAL-00075" summary="===&gt; leisurexi">
+      <created>1567403902088</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1567403902088</updated>
+    </task>
+    <task id="LOCAL-00076" summary="===&gt; leisurexi">
+      <created>1567404361819</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1567404361819</updated>
+    </task>
+    <task id="LOCAL-00077" summary="===&gt; leisurexi">
+      <created>1567404651952</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1567404651952</updated>
+    </task>
+    <task id="LOCAL-00078" summary="===&gt; leisurexi">
+      <created>1567404691518</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1567404691518</updated>
+    </task>
+    <task id="LOCAL-00079" summary="===&gt; leisurexi">
+      <created>1567405070953</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1567405070953</updated>
+    </task>
+    <task id="LOCAL-00080" summary="===&gt; leisurexi">
+      <created>1567405517428</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1567405517428</updated>
+    </task>
+    <task id="LOCAL-00081" summary="===&gt; leisurexi">
+      <created>1567407656276</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1567407656276</updated>
+    </task>
+    <task id="LOCAL-00082" summary="===&gt; leisurexi">
+      <created>1567408078878</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1567408078878</updated>
+    </task>
+    <task id="LOCAL-00083" summary="===&gt; leisurexi">
+      <created>1567408167281</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1567408167281</updated>
+    </task>
+    <task id="LOCAL-00084" summary="===&gt; leisurexi">
+      <created>1567408525800</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1567408525800</updated>
+    </task>
+    <task id="LOCAL-00085" summary="===&gt; leisurexi">
+      <created>1567408682409</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1567408682409</updated>
+    </task>
+    <task id="LOCAL-00086" summary="===&gt; leisurexi">
+      <created>1567409661317</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1567409661317</updated>
+    </task>
+    <task id="LOCAL-00087" summary="===&gt; leisurexi">
+      <created>1567409936997</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1567409936997</updated>
+    </task>
+    <task id="LOCAL-00088" summary="===&gt; leisurexi">
+      <created>1567411638897</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1567411638897</updated>
+    </task>
+    <task id="LOCAL-00089" summary="===&gt; leisurexi">
+      <created>1567412556743</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1567412556743</updated>
+    </task>
+    <task id="LOCAL-00090" summary="===&gt; leisurexi">
+      <created>1567412570385</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1567412570385</updated>
+    </task>
+    <task id="LOCAL-00091" summary="===&gt; leisurexi">
+      <created>1567413252872</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1567413252872</updated>
+    </task>
+    <task id="LOCAL-00092" summary="===&gt; leisurexi">
+      <created>1567413322434</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1567413322434</updated>
+    </task>
+    <task id="LOCAL-00093" summary="===&gt; leisurexi">
+      <created>1567413865747</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1567413865747</updated>
+    </task>
+    <task id="LOCAL-00094" summary="===&gt; leisurexi">
+      <created>1567414030159</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1567414030159</updated>
+    </task>
+    <task id="LOCAL-00095" summary="===&gt; leisurexi">
+      <created>1567414950901</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1567414950901</updated>
+    </task>
+    <task id="LOCAL-00096" summary="===&gt; leisurexi">
+      <created>1567415849949</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1567415849949</updated>
+    </task>
+    <task id="LOCAL-00097" summary="===&gt; leisurexi">
+      <created>1567415983087</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1567415983087</updated>
+    </task>
+    <task id="LOCAL-00098" summary="===&gt; leisurexi">
+      <created>1567416889897</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1567416889897</updated>
+    </task>
+    <task id="LOCAL-00099" summary="===&gt; leisurexi">
+      <created>1567421355936</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1567421355936</updated>
+    </task>
+    <task id="LOCAL-00100" summary="===&gt; leisurexi">
+      <created>1567422400404</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1567422400404</updated>
+    </task>
+    <task id="LOCAL-00101" summary="===&gt; leisurexi">
+      <created>1567478878391</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1567478878391</updated>
+    </task>
+    <task id="LOCAL-00102" summary="===&gt; leisurexi">
+      <created>1567478893384</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1567478893384</updated>
+    </task>
+    <task id="LOCAL-00103" summary="===&gt; leisurexi">
+      <created>1567478918243</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1567478918243</updated>
+    </task>
+    <task id="LOCAL-00104" summary="===&gt; leisurexi">
+      <created>1567479941291</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1567479941291</updated>
+    </task>
+    <task id="LOCAL-00105" summary="===&gt; leisurexi">
+      <created>1567480034477</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1567480034477</updated>
+    </task>
+    <task id="LOCAL-00106" summary="===&gt; leisurexi">
+      <created>1567481529904</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1567481529904</updated>
+    </task>
+    <task id="LOCAL-00107" summary="===&gt; leisurexi">
+      <created>1567481539531</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1567481539531</updated>
+    </task>
+    <task id="LOCAL-00108" summary="===&gt; leisurexi">
+      <created>1567490712440</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1567490712440</updated>
+    </task>
+    <option name="localTasksCounter" value="109" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="===&gt; leisurexi" />
+    <option name="LAST_COMMIT_MESSAGE" value="===&gt; leisurexi" />
+  </component>
+</project>

@@ -1,0 +1,132 @@
+package com.xy.wwoa.approval.service;
+
+import com.xy.wwoa.approval.api.EntryApprovalList;
+import com.xy.wwoa.approval.api.EntryApprovalModel;
+import com.xy.wwoa.approval.mapper.EntryApprovalMapper;
+import com.xy.wwoa.approval.model.EntryApproval;
+import com.xy.wwoa.approval.util.ApprovalNumberDevice;
+import com.xy.wwoa.approval.util.ApprovalUtil;
+import com.xy.wwoa.common.api.ResultCode;
+import com.xy.wwoa.common.util.CommonUtil;
+import com.xy.wwoa.employee.exception.EmployeeException;
+import com.xy.wwoa.employee.model.EmployeeInformation;
+import com.xy.wwoa.employee.service.EmployeeInformationService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * @Author leisurexi
+ * @Description
+ * @Date 2019/8/28
+ * @Time 11:07
+ */
+@Service
+public class EntryApprovalService {
+
+    @Resource
+    private EntryApprovalMapper entryApprovalMapper;
+
+    @Resource
+    private ApprovalProcessService approvalProcessService;
+
+    @Resource
+    private EmployeeInformationService employeeInformationService;
+
+    /**
+     * 根据审批编号查询
+     */
+    public EntryApproval getByApprovalNumber(String approvalNumber, Integer approvalTypeId) {
+        EntryApproval entryApproval = entryApprovalMapper.findByApprovalNumber(approvalNumber, approvalTypeId);
+        entryApproval.setEmployeeInformation(employeeInformationService.getById(entryApproval.getEmployeeInformationId()));
+        return entryApproval;
+    }
+
+    /**
+     * 保存入职审批信息
+     */
+    @Transactional
+    public void saveEntry(Integer employeeId, EntryApproval entryApproval, EmployeeInformation employeeInformation, Integer approvalTypeId) {
+        String approvalNumber = ApprovalNumberDevice.createApprovalNumber();
+        entryApproval.setApprovalNumber(approvalNumber);
+        entryApproval.setCreateUser(employeeId);
+        entryApproval.setCreateTime(LocalDateTime.now());
+        entryApproval.setType(approvalTypeId);
+        entryApproval.setStatus(0);
+        //保存员工基本信息
+        employeeInformationService.save(employeeInformation);
+        //保存审批信息
+        entryApproval.setEmployeeInformationId(employeeInformation.getId());
+        entryApprovalMapper.save(entryApproval);
+        //保存审批流程信息
+        approvalProcessService.save(employeeId, approvalNumber, entryApproval.getApproverIds(), approvalTypeId);
+    }
+
+    /**
+     * 保存新员工入职审批信息
+     */
+    @Transactional
+    public void saveNewEmployeeEntry(EntryApproval entryApproval, EmployeeInformation employeeInformation, Integer approvalTypeId) {
+        EmployeeInformation information = employeeInformationService.getByTelephone(employeeInformation.getTelephone());
+        if (information == null) {
+            throw new EmployeeException("该员工未入职");
+        }
+        if (employeeInformation.getEmployeeId().equals(information.getEmployeeId())) {
+            throw new EmployeeException("该新员工入职申请已提交");
+        }
+        String approvalNumber = ApprovalNumberDevice.createApprovalNumber();
+        entryApproval.setApprovalNumber(approvalNumber);
+        entryApproval.setCreateUser(employeeInformation.getEmployeeId());
+        entryApproval.setCreateTime(LocalDateTime.now());
+        entryApproval.setType(approvalTypeId);
+        entryApproval.setStatus(0);
+        //保存员工背景信息
+        employeeInformationService.saveBackgroundInformation(employeeInformation);
+        //填充员工基本信息
+        employeeInformation.setId(information.getId());
+        employeeInformationService.modifyNewEmployeeEntry(employeeInformation);
+        //保存审批信息
+        entryApproval.setEmployeeInformationId(information.getId());
+        entryApprovalMapper.save(entryApproval);
+        //保存审批流程信息
+        approvalProcessService.save(employeeInformation.getEmployeeId(), approvalNumber, entryApproval.getApproverIds(), approvalTypeId);
+    }
+
+    /**
+     * 后台 人事管理-入职审批列表
+     */
+    public EntryApprovalList listEntryApproval(Integer organizationId, Integer jobId, String employeeName, String telephone, Integer status, Integer page, Integer size) {
+        List<EntryApproval> entryApprovalList = entryApprovalMapper.listEntryApproval(organizationId, jobId, employeeName, telephone, status, (page - 1) * size, page * size);
+        long total = entryApprovalMapper.countEntryApproval(organizationId, jobId, employeeName, telephone, status);
+
+        List<EntryApprovalModel> entryApprovalModelList = entryApprovalList.stream().map(entryApproval -> {
+            EmployeeInformation employeeInformation = employeeInformationService.getById(entryApproval.getEmployeeInformationId());
+            EntryApprovalModel approvalModel = EntryApprovalModel.builder()
+                    .approvalNumber(entryApproval.getApprovalNumber())
+                    .employeeName(employeeInformation.getName())
+                    .organizationName(employeeInformation.getOrganizationName())
+                    .jobName(employeeInformation.getJobName())
+                    .takeOfficeCity(employeeInformation.getTakeOfficeCity())
+                    .entryTime(employeeInformation.getEntryTime())
+                    .telephone(employeeInformation.getTelephone())
+                    .probationTime(employeeInformation.getProbationTime())
+                    .contractTypeName(employeeInformation.getContractTypeName())
+                    .contractTime(employeeInformation.getContractTime())
+                    .state(ApprovalUtil.approvalStatusStr(entryApproval.getStatus()))
+                    .remark(CommonUtil.fillNull(entryApproval.getRemark()))
+                    .build();
+            return approvalModel;
+        }).collect(Collectors.toList());
+
+        return EntryApprovalList.builder()
+                .list(entryApprovalModelList)
+                .page(page)
+                .total(total)
+                .build();
+    }
+
+}

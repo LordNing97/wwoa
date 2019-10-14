@@ -1,0 +1,246 @@
+package com.xy.wwoa.approval.service;
+
+import com.xy.wwoa.approval.api.ApprovalDetail;
+import com.xy.wwoa.approval.api.ApprovalDetailModel;
+import com.xy.wwoa.approval.api.ApprovalModel;
+import com.xy.wwoa.approval.api.ApprovalProcessModel;
+import com.xy.wwoa.approval.mapper.*;
+import com.xy.wwoa.approval.model.ApprovalProcess;
+import com.xy.wwoa.approval.model.ApprovalType;
+import com.xy.wwoa.approval.model.Cc;
+import com.xy.wwoa.approval.strategy.ApprovalContext;
+import com.xy.wwoa.approval.util.ApprovalUtil;
+import com.xy.wwoa.employee.service.EmployeeService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @Author leisurexi
+ * @Description
+ * @Date 2019/8/28
+ * @Time 17:27
+ */
+@Service
+public class ApprovalService {
+
+    @Resource
+    private ApprovalProcessMapper approvalProcessMapper;
+
+    @Resource
+    private ApprovalTypeMapper approvalTypeMapper;
+
+    @Resource
+    private ApprovalMapper approvalMapper;
+
+    @Resource
+    private EmployeeService employeeService;
+
+    @Resource
+    private CcService ccService;
+
+    /**
+     * 待处理
+     */
+    public List<ApprovalModel> pendingApproval(Integer employeeId, String searchCondition, Integer approvalTypeId) {
+        //查询待审批信息
+        List<ApprovalProcess> approvalProcessList = approvalProcessMapper.findPendingApproval(employeeId, approvalTypeId);
+        List<ApprovalModel> approvalModelList = new ArrayList<>(approvalProcessList.size());
+        boolean condition = StringUtils.isEmpty(searchCondition);
+        approvalProcessList.forEach(approvalProcess -> {
+            ApprovalContext context = new ApprovalContext(approvalProcess.getApprovalTypeId());
+            ApprovalModel approvalModel = context.buildApprovalModel(approvalProcess.getApprovalNumber());
+            if (condition) {
+                approvalModelList.add(approvalModel);
+            } else {
+                if (approvalModel.getTitle().contains(searchCondition)) {
+                    approvalModelList.add(approvalModel);
+                }
+            }
+        });
+        return approvalModelList;
+    }
+
+    /**
+     * 已处理
+     */
+    public List<ApprovalModel> processed(Integer employeeId, String searchCondition, Integer approvalTypeId, Integer status) {
+        //查询待审批信息
+        List<ApprovalProcess> approvalProcessList = approvalProcessMapper.processed(employeeId, approvalTypeId, status);
+        List<ApprovalModel> approvalModelList = new ArrayList<>(approvalProcessList.size());
+        boolean condition = StringUtils.isEmpty(searchCondition);
+        approvalProcessList.forEach(approvalProcess -> {
+            ApprovalContext context = new ApprovalContext(approvalProcess.getApprovalTypeId());
+            ApprovalModel approvalModel = context.buildApprovalModel(approvalProcess.getApprovalNumber());
+            if (condition) {
+                approvalModelList.add(approvalModel);
+            } else {
+                if (approvalModel.getTitle().contains(searchCondition)) {
+                    approvalModelList.add(approvalModel);
+                }
+            }
+        });
+        return approvalModelList;
+    }
+
+    /**
+     * 审批详情
+     */
+    public ApprovalDetailModel approvalDetail(String approvalNumber, Integer approvalTypeId) {
+        List<ApprovalProcess> approvalProcesses = approvalProcessMapper.findByApprovalNumber(approvalNumber);
+        List<ApprovalProcessModel> approvers = new ArrayList<>(approvalProcesses.size() + 1);
+        ApprovalContext approvalContext = new ApprovalContext(approvalTypeId);
+        ApprovalDetail approvalDetail = approvalContext.buildApprovalDetail(approvalNumber);
+        ApprovalProcessModel approvalProcessModel = ApprovalProcessModel.builder()
+                .approverName(approvalDetail.getCreateUserName())
+                .status(-1)
+                .state("发起申请")
+                .approvalTime(approvalDetail.getCreateTime())
+                .build();
+        approvers.add(approvalProcessModel);
+        String approvalDetailState = "";
+        Integer approvalDetailStatus = 0;
+        for (ApprovalProcess approvalProcess : approvalProcesses) {
+            ApprovalProcessModel processModel = ApprovalProcessModel.builder()
+                    .approverName(approvalProcess.getApproverName())
+                    .status(approvalProcess.getStatus())
+                    .state(ApprovalUtil.approvalDetailStatusStr(approvalProcess.getStatus()))
+                    .approvalTime(approvalProcess.getApprovalTime())
+                    .approvalOpinion(approvalProcess.getApprovalOpinion())
+                    .build();
+            approvers.add(processModel);
+            if (approvalProcess.getLatest() == 1) {
+                approvalDetailState = approvalProcess.getStatus() == 0 ? "等待" + approvalProcess.getApproverName() + "审批" : ApprovalUtil.approvalDetailStatusStr(approvalProcess.getStatus());
+                approvalDetailStatus = approvalProcess.getStatus();
+                break;
+            }
+        }
+
+        ApprovalDetailModel detailModel = ApprovalDetailModel.builder()
+                .createUser(approvalDetail.getCreateUser())
+                .createUserName(approvalDetail.getCreateUserName())
+                .status(approvalDetailStatus)
+                .state(approvalDetailState)
+                .approvalContent(approvalDetail.getApprovalContent())
+                .approvers(approvers)
+                .ccs(employeeService.getByIds(approvalDetail.getCcIds()))
+                .build();
+        return detailModel;
+    }
+
+    /**
+     * 审核
+     *
+     * @param approvalNumber 审批编号
+     * @param approvalTypeId 审批类型
+     * @param result         1 同意 2 拒绝
+     * @return
+     */
+    @Transactional
+    public boolean approval(Integer employeeId, String approvalNumber, Integer approvalTypeId, Integer result, String approvalOpinion) {
+        //修改流程状态
+        //查询该审批最新的流程
+        ApprovalProcess approvalProcess = approvalProcessMapper.findLatest(approvalNumber);
+        approvalProcessMapper.modifyStatus(approvalProcess.getId(), result, approvalOpinion, LocalDateTime.now());
+        ApprovalType approvalType = approvalTypeMapper.findById(approvalTypeId);
+        if (result == 1) { //同意
+            int nextProcess = approvalProcessMapper.modifyNextProcess(approvalProcess.getId(), approvalNumber);
+            if (nextProcess > 0) { //代表后面还有至少一个流程
+                //把当前流程设置为不是最新状态，即 latest = 0
+                approvalProcessMapper.modifyNotLatest(approvalProcess.getId());
+            } else {
+                String ccIds = approvalMapper.findCcIds(approvalNumber, approvalType.getTableName());
+                //修改审批信息状态
+                approvalMapper.modifyStatus(approvalNumber, result, approvalType.getTableName());
+                if (!StringUtils.isEmpty(ccIds)) {
+                    ccService.save(approvalNumber, approvalTypeId, ccIds.split(","));
+                }
+                ApprovalContext context = new ApprovalContext(approvalProcess.getApprovalTypeId());
+                context.approved(approvalNumber);
+            }
+        } else if (result == 2) { //拒绝
+            //修改审批信息状态
+            approvalMapper.modifyStatus(approvalNumber, result, approvalType.getTableName());
+        } else if (result == 3) { //撤销
+            approvalProcessMapper.modifyApproverId(approvalProcess.getId(), employeeId);
+            //修改审批信息状态
+            approvalMapper.modifyStatus(approvalNumber, result, approvalType.getTableName());
+        }
+        return true;
+    }
+
+    /**
+     * 我提交的
+     */
+    public List<ApprovalModel> iSubmitted(Integer employeeId, String searchCondition, Integer approvalTypeId, Integer status) {
+        List<ApprovalProcess> approvalProcessList = approvalProcessMapper.findByEmployeeId(employeeId, approvalTypeId, status);
+        List<ApprovalModel> approvalModelList = new ArrayList<>(approvalProcessList.size());
+        boolean condition = StringUtils.isEmpty(searchCondition);
+        for (ApprovalProcess approvalProcess : approvalProcessList) {
+            ApprovalContext context = new ApprovalContext(approvalProcess.getApprovalTypeId());
+            ApprovalModel approvalModel = context.buildApprovalModel(approvalProcess.getApprovalNumber());
+            if (condition) {
+                approvalModelList.add(approvalModel);
+            } else {
+                if (approvalModel.getTitle().contains(searchCondition)) {
+                    approvalModelList.add(approvalModel);
+                }
+            }
+        }
+        return approvalModelList;
+    }
+
+    /**
+     * 抄送我的
+     */
+    public List<ApprovalModel> ccMy(Integer employeeId, Integer ccStatus, String searchCondition, Integer approvalTypeId, Integer status) {
+        List<Cc> ccList = ccService.getByEmployeeId(employeeId, approvalTypeId, ccStatus);
+        List<ApprovalModel> approvalModelList = new ArrayList<>(ccList.size());
+        boolean condition = StringUtils.isEmpty(searchCondition);
+        for (Cc cc : ccList) {
+            ApprovalContext context = new ApprovalContext(cc.getApprovalTypeId());
+            ApprovalModel approvalModel = context.buildApprovalModel(cc.getApprovalNumber());
+            approvalModel.setCcId(cc.getId());
+            approvalModel.setRead(cc.getStatus());
+            if (status != null && status > -1) {
+                if(approvalModel.getStatus() != null){
+                    if (status == 1 || status == 2) {
+                        if (approvalModel.getStatus() == 1 || approvalModel.getStatus() == 2) {
+                            approvalModelList.add(approvalModel);
+                            continue;
+                        }
+                    } else {
+                        if (approvalModel.getStatus() == status) {
+                            approvalModelList.add(approvalModel);
+                            continue;
+                        }
+                    }
+                }else{
+                    approvalModel.setStatus(1);
+                }
+            }
+            if (condition) {
+                approvalModelList.add(approvalModel);
+            } else {
+                if (approvalModel.getTitle().contains(searchCondition)) {
+                    approvalModelList.add(approvalModel);
+                }
+            }
+        }
+        return approvalModelList;
+    }
+
+    /**
+     * 修改抄送为已读
+     */
+    public boolean modifyCcStatus(String ids) {
+        return ccService.modifyCcStatus(ids);
+    }
+
+
+}

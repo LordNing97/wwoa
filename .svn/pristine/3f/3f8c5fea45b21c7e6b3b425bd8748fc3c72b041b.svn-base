@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.employee.mapper.FamilyStatusMapper">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.xy.wwoa.employee.model.FamilyStatus">
+        insert into wwoa_family_status values (#{memberFamily}, #{relationship}, #{occupation})
+    </insert>
+
+</mapper>

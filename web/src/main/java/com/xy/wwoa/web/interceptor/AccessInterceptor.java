@@ -1,0 +1,67 @@
+package com.xy.wwoa.web.interceptor;
+
+import com.xy.wwoa.common.api.Result;
+import com.xy.wwoa.common.api.ResultCode;
+import com.xy.wwoa.common.util.JSONUtil;
+import com.xy.wwoa.employee.config.EmployeeContext;
+import com.xy.wwoa.employee.model.Employee;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @Author leisurexi
+ * @Description
+ * @Date 2019/8/29
+ * @Time 16:33
+ */
+@Component
+@Slf4j
+public class AccessInterceptor extends HandlerInterceptorAdapter {
+
+    private List<String> whiteList = new ArrayList<>();
+
+    {
+        whiteList.add("wechatLogin");
+        whiteList.add("uploadPhoto");
+        whiteList.add("sendMessage");
+        whiteList.add("swagger");
+        whiteList.add("v2");
+        whiteList.add("configuration");
+        whiteList.add("error");
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if (handler instanceof HandlerMethod) {
+            String requestPath = request.getServletPath();
+            for (String path : whiteList) {
+                if (requestPath.contains(path)) {
+                    return true;
+                }
+            }
+//            String userId = request.getHeader("userId");
+            String userId = "1596";
+            if (StringUtils.isEmpty(userId)) {
+                log.error("请求地址：{}", requestPath);
+                Result result = Result.builder(ResultCode.LOGIN_EXPIRED).build();
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("application/json");
+                response.getWriter().write(JSONUtil.toJsonString(result));
+                return false;
+            }
+            Employee employee = new Employee();
+            employee.setId(Integer.valueOf(userId));
+            EmployeeContext.setEmployeeHolder(employee);
+        }
+        return true;
+    }
+}
+

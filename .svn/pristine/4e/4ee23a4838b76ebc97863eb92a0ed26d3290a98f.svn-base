@@ -1,0 +1,137 @@
+package com.xy.wwoa.employee.service;
+
+
+import com.xy.wwoa.employee.mapper.EmployeeInformationMapper;
+import com.xy.wwoa.employee.model.EducationStatus;
+import com.xy.wwoa.employee.model.EmployeeInformation;
+import com.xy.wwoa.employee.model.FamilyStatus;
+import com.xy.wwoa.employee.model.JobResume;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * @Author leisurexi
+ * @Description
+ * @Date 2019/8/30
+ * @Time 16:20
+ */
+@Service
+public class EmployeeInformationService {
+
+    @Resource
+    private EmployeeInformationMapper employeeInformationMapper;
+
+    @Resource
+    private EducationStatusService educationStatusService;
+
+    @Resource
+    private FamilyStatusService familyStatusService;
+
+    @Resource
+    private JobResumeService jobResumeService;
+
+    /**
+     * 保存
+     */
+    public boolean save(EmployeeInformation employeeInformation) {
+        employeeInformation.setCurrentSalary(employeeInformation.getProbationSalary());
+        employeeInformation.setMaturityTime(employeeInformation.getEntryTime().plusMonths(employeeInformation.getProbationTime()));
+        employeeInformation.setEmployeeStatus(0);
+        employeeInformation.setStatus(0);
+        return employeeInformationMapper.save(employeeInformation) > 0;
+    }
+
+    /**
+     * 更新新员工入职相关信息
+     */
+    public boolean modifyNewEmployeeEntry(EmployeeInformation employeeInformation) {
+        return employeeInformationMapper.modifyNewEmployeeEntry(employeeInformation) > 0;
+    }
+
+    /**
+     * 修改员工基本信息状态
+     */
+    public boolean modifyStatus(Integer id, Integer status) {
+        return employeeInformationMapper.modifyStatus(id, status) > 0;
+    }
+
+    /**
+     * 更新员工合同续签相关信息
+     */
+    public boolean modifyContractRenew(Integer employeeId, BigDecimal currentSalary, LocalDateTime maturityTime) {
+        return employeeInformationMapper.modifyContractRenew(employeeId, currentSalary, maturityTime) > 0;
+    }
+
+    /**
+     * 根据手机号获取员工基本信息
+     */
+    public EmployeeInformation getByTelephone(String telephone) {
+        return employeeInformationMapper.findByTelephone(telephone);
+    }
+
+    /**
+     * 根据id获取员工基本信息
+     */
+    public EmployeeInformation getById(Integer id) {
+        EmployeeInformation employeeInformation = employeeInformationMapper.findById(id);
+        employeeInformation.setEducationStatuses(educationStatusService.getByIds(employeeInformation.getEducationStatusIds()));
+        employeeInformation.setFamilyStatuses(familyStatusService.getByIds(employeeInformation.getFamilyStatusIds()));
+        employeeInformation.setJobResumes(jobResumeService.getByIds(employeeInformation.getJobResumeIds()));
+        return employeeInformation;
+    }
+
+    /**
+     * 根据员工id查找员工基本信息
+     */
+    public EmployeeInformation getByEmployeeId(Integer employeeId) {
+        return employeeInformationMapper.findByEmployeeId(employeeId);
+    }
+
+    /**
+     * 保存教育情况、家庭状况、工作履历信息
+     */
+    public void saveBackgroundInformation(EmployeeInformation employeeInformation) {
+        List<EducationStatus> educationStatusList = employeeInformation.getEducationStatuses();
+        Objects.requireNonNull(educationStatusList);
+
+        List<FamilyStatus> familyStatusList = employeeInformation.getFamilyStatuses();
+        Objects.requireNonNull(familyStatusList);
+
+        List<JobResume> jobResumeList = employeeInformation.getJobResumes();
+        Objects.requireNonNull(jobResumeList);
+
+        String educationStatusIds = "";
+        for (EducationStatus educationStatus : educationStatusList) {
+            educationStatusService.save(educationStatus);
+            educationStatusIds += educationStatus.getId() + ",";
+        }
+
+        String familyStatusIds = "";
+        for (FamilyStatus familyStatus : familyStatusList) {
+            familyStatusService.save(familyStatus);
+            familyStatusIds += familyStatus.getId() + ",";
+        }
+
+        String jobResumeIds = "";
+        for (JobResume jobResume : jobResumeList) {
+            jobResumeService.save(jobResume);
+            jobResumeIds += jobResume.getId() + ",";
+        }
+
+        employeeInformation.setEducationStatusIds(educationStatusIds.length() > 0 ? educationStatusIds.substring(0, educationStatusIds.length() - 1) : educationStatusIds);
+        employeeInformation.setFamilyStatusIds(familyStatusIds.length() > 0 ? familyStatusIds.substring(0, familyStatusIds.length() - 1) : familyStatusIds);
+        employeeInformation.setJobResumeIds(jobResumeIds.length() > 0 ? jobResumeIds.substring(0, jobResumeIds.length() - 1) : jobResumeIds);
+    }
+
+    //查询可以转正的员工id
+    public List<String> getCanTurnPositive() {
+        return employeeInformationMapper.findCanTurnPositive();
+    }
+
+
+}

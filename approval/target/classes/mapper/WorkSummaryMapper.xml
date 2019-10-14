@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.approval.mapper.WorkSummaryMapper">
+
+    <insert id="save">
+        insert into wwoa_work_summary values(#{approvalNumber},#{employeeId},#{organizationId},#{jobId},#{workContent},#{approverIds},#{ccIds},#{createTime},
+        #{status},#{remark},#{createUser})
+    </insert>
+
+    <select id="findByApprovalNumber" resultType="com.xy.wwoa.approval.model.WorkSummary">
+        select wwoa_work_summary.*, employee.employeeName as createUserName
+        from wwoa_work_summary as wwoa_work_summary
+        left outer join ww_employee as employee on wwoa_work_summary.createUser = employee.id
+        where wwoa_work_summary.approvalNumber = #{approvalNumber}
+    </select>
+
+    <select id="countWorkSummary" resultType="java.lang.Long">
+        select count(*) from wwoa_work_summary as work_summary
+        left join ww_employee as employee on work_summary.createUser = employee.id
+        <where>
+            <if test="organizationId != null">
+                and employee.organizationId = #{organizationId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee.employeeName like '%' + #{employeeName} + '%'
+            </if>
+            <if test="workContent != null and workContent != ''">
+                and work_summary.workContent like '%' + #{workContent} + '%'
+            </if>
+        </where>
+    </select>
+
+    <select id="listWorkSummary" resultType="com.xy.wwoa.approval.model.WorkSummary">
+        select * from (
+        select top ${size} work_summary.*, ROW_NUMBER() OVER(Order by work_summary.id desc) as rowNumber
+        from wwoa_work_summary as work_summary
+        left join ww_employee as employee on work_summary.createUser = employee.id
+        <where>
+            <if test="organizationId != null">
+                and employee.organizationId = #{organizationId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee.employeeName like '%' + #{employeeName} + '%'
+            </if>
+            <if test="workContent != null and workContent != ''">
+                and work_summary.workContent like '%' + #{workContent} + '%'
+            </if>
+        </where>
+        ) as T where rowNumber > #{page} ORDER BY rowNumber
+    </select>
+
+    <select id="findById" resultType="com.xy.wwoa.approval.model.WorkSummary">
+        select * from wwoa_work_summary where id = #{id}
+    </select>
+
+</mapper>

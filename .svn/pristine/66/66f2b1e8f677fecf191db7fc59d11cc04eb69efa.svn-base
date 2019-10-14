@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.approval.mapper.ContractApprovalMapper">
+
+    <insert id="save">
+        insert into wwoa_contract_approval values(#{approvalNumber}, #{organizationId}, #{contractNumber}, #{contractTypeId}, #{signingTime}, #{contractMoney},
+        #{ourSideCompanyName}, #{salesPrincipal}, #{otherSideCompanyName}, #{customerContact}, #{contractTermsIds}, #{imgs}, #{annexs}, #{approverIds},
+        #{ccIds}, #{createUser}, #{createTime}, #{status}, #{remark})
+    </insert>
+
+    <select id="findByApprovalNumber" resultType="com.xy.wwoa.approval.model.ContractApproval">
+        select contract_approval.*, employee.employeeName as createUserName, organization.organizationName as organizationName, contract_type.name as contractTypeName
+        from wwoa_contract_approval as contract_approval
+        left outer join ww_employee as employee on contract_approval.createUser = employee.id
+        left outer join ww_organization as organization on contract_approval.organizationId = organization.id
+        left outer join wwoa_contract_type as contract_type on contract_approval.contractTypeId = contract_type.id
+        where contract_approval.approvalNumber = #{approvalNumber}
+    </select>
+
+    <select id="countContractApproval" resultType="long">
+        select count(*) from wwoa_contract_approval as contract_approval
+        left outer join ww_organization as organization on contract_approval.organizationId = organization.id
+        left outer join wwoa_contract_type as contract_type on contract_approval.contractTypeId = contract_type.id
+        <where>
+            <if test="organizationId != null">
+                and contract_approval.organizationId = #{organizationId}
+            </if>
+            <if test="contractNumber != null">
+                and contract_approval.contractNumber like '%' + #{contractNumber} + '%'
+            </if>
+            <if test="contractTypeId != null">
+                and contract_approval.contractTypeId = #{contractTypeId}
+            </if>
+            <if test="signingTime != null">
+                and contract_approval.signingTime like '%' + #{signingTime} + '%'
+            </if>
+            <if test="ourSideCompanyName != null">
+                and contract_approval.ourSideCompanyName like '%' + #{ourSideCompanyName} + '%'
+            </if>
+            <if test="otherSideCompanyName != null">
+                and contract_approval.otherSideCompanyName like '%' + #{otherSideCompanyName} + '%'
+            </if>
+        </where>
+    </select>
+
+    <select id="listContractApproval" resultType="com.xy.wwoa.approval.model.ContractApproval">
+        select * from (
+            select top ${size} contract_approval.*, organization.organizationName, contract_type.name as contractTypeName,
+            ROW_NUMBER() OVER(Order by contract_approval.createTime desc) as rowNumber
+            from wwoa_contract_approval as contract_approval left outer join ww_organization as organization on contract_approval.organizationId = organization.id
+            left outer join wwoa_contract_type as contract_type on contract_approval.contractTypeId = contract_type.id
+            <where>
+                <if test="organizationId != null">
+                    and contract_approval.organizationId = #{organizationId}
+                </if>
+                <if test="contractNumber != null">
+                    and contract_approval.contractNumber like '%' + #{contractNumber} + '%'
+                </if>
+                <if test="contractTypeId != null">
+                    and contract_approval.contractTypeId = #{contractTypeId}
+                </if>
+                <if test="signingTime != null">
+                    and contract_approval.signingTime like '%' + #{signingTime} + '%'
+                </if>
+                <if test="ourSideCompanyName != null">
+                    and contract_approval.ourSideCompanyName like '%' + #{ourSideCompanyName} + '%'
+                </if>
+                <if test="otherSideCompanyName != null">
+                    and contract_approval.otherSideCompanyName like '%' + #{otherSideCompanyName} + '%'
+                </if>
+            </where>
+        ) as T where rowNumber > #{page} ORDER BY rowNumber
+    </select>
+
+</mapper>

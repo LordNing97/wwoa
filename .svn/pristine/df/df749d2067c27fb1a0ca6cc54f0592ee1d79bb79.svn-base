@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.approval.mapper.WorkSummaryMapper">
+
+    <insert id="save">
+        insert into wwoa_work_summary values(#{approvalNumber},#{employeeId},#{organizationId},#{jobId},#{workContent},#{approverIds},#{ccIds},#{createTime},
+        #{status},#{remark},#{createUser})
+    </insert>
+
+    <select id="findByApprovalNumber" resultType="com.xy.wwoa.approval.model.WorkSummary">
+        select wwoa_work_summary.*, employee.employeeName as createUserName
+        from wwoa_work_summary as wwoa_work_summary
+        left outer join ww_employee as employee on wwoa_work_summary.createUser = employee.id
+        where wwoa_work_summary.approvalNumber = #{approvalNumber}
+    </select>
+
+</mapper>

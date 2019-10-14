@@ -1,0 +1,83 @@
+package com.xy.wwoa.approval.controller;
+
+import com.xy.wwoa.approval.api.PerformanceAppraisalList;
+import com.xy.wwoa.approval.api.PerformanceAppraisalModal;
+import com.xy.wwoa.approval.model.PerformanceAppraisal;
+import com.xy.wwoa.approval.request.SavePerformanceAppraisalRequest;
+import com.xy.wwoa.approval.service.PerformanceAppraisalService;
+import com.xy.wwoa.common.api.PageResult;
+import com.xy.wwoa.common.api.Result;
+import com.xy.wwoa.common.util.PageUtil;
+import com.xy.wwoa.employee.model.Employee;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+/**
+ * @Author 陈璇
+ * @Description PerformanceAppraisalController
+ * @date 2019/8/31 12:04
+ */
+@RestController
+@RequestMapping("performanceAppraisal")
+@Validated
+@Api(value = "绩效自评接口", produces = "application/json")
+public class PerformanceAppraisalController {
+
+    @Resource
+    private PerformanceAppraisalService performanceAppraisalService;
+
+    @ApiOperation(value = "添加绩效自评审批信息", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "approvalTypeId", value = "审批类型id", required = true, dataType = "int", paramType = "query"),
+    })
+    @PostMapping("save")
+    public Result save(@ApiIgnore Employee employee, @ModelAttribute @Valid SavePerformanceAppraisalRequest savePerformanceAppraisalRequest, @NotNull Integer approvalTypeId){
+        PerformanceAppraisal performanceAppraisal = new PerformanceAppraisal();
+        BeanUtils.copyProperties(savePerformanceAppraisalRequest,performanceAppraisal);
+        performanceAppraisalService.save(employee,performanceAppraisal,approvalTypeId);
+        return Result.builder().build();
+    }
+
+    @ApiOperation(value = "后台 人事管理-绩效自评列表", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "organizationId", value = "部门id", dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "employeeName", value = "员工姓名", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "当前页", dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "size", value = "每页显示数量", dataType = "int", paramType = "query"),
+    })
+    @PostMapping("listPerformanceAppraisal")
+    public PageResult listPerformanceAppraisal(Integer organizationId, String employeeName,Integer page,Integer size){
+        PerformanceAppraisalList performanceAppraisalList = performanceAppraisalService.listPerformanceAppraisal(organizationId, employeeName, page == null ? PageUtil.PAGE_DEFAULT : page,
+                size == null ? PageUtil.SIZE_DEFAULT : size);
+        return PageResult.<PerformanceAppraisalModal>builder()
+                .data(performanceAppraisalList.getList())
+                .total(performanceAppraisalList.getTotal())
+                .page(performanceAppraisalList.getPage())
+                .build();
+    }
+
+    @ApiOperation(value = "后台 人事管理-绩效审批详情信息", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "绩效审批id", required = true, dataType = "int", paramType = "query"),
+    })
+    @PostMapping("detailedInformation")
+    public Result detailedInformation(Integer id){
+        return Result.builder()
+                .data(performanceAppraisalService.detailedInformation(id))
+                .build();
+    }
+
+}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.setting.mapper.IncreasedTaxRateMapper">
+
+    <insert id="save">
+        insert into wwoa_increased_tax_rate values(#{taxRate}, #{status}, #{describe})
+    </insert>
+
+    <update id="modify">
+        update wwoa_increased_tax_rate set taxRate = #{taxRate}, status = #{status}, describe = #{describe} where id = #{id}
+    </update>
+
+    <update id="delete">
+        update wwoa_increased_tax_rate set status = 2 where id = #{id}
+    </update>
+
+    <select id="listIncreasedTaxRate" resultType="com.xy.wwoa.setting.model.IncreasedTaxRate">
+        select * from (
+        select top ${size} *, ROW_NUMBER() OVER(Order by id) as rowNumber from wwoa_increased_tax_rate
+        <where>
+            and status &lt;> 2
+            <if test="taxRate != null">
+                and taxRate like '%' + #{taxRate} + '%'
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        ) as T where rowNumber > #{page} ORDER BY rowNumber
+    </select>
+
+    <select id="countIncreasedTaxRate" resultType="java.lang.Long">
+        select count(*) from wwoa_increased_tax_rate
+        <where>
+            and status &lt;> 2
+            <if test="taxRate != null">
+                and taxRate like '%' + #{taxRate} + '%'
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="findById" resultType="com.xy.wwoa.setting.model.IncreasedTaxRate">
+        select * from wwoa_increased_tax_rate where id = #{id}
+    </select>
+
+</mapper>

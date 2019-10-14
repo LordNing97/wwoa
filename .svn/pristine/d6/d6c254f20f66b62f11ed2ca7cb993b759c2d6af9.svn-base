@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.xy</groupId>
+        <artifactId>wwoa</artifactId>
+        <version>0.0.1</version>
+    </parent>
+
+    <groupId>com.xy.wwoa</groupId>
+    <artifactId>web</artifactId>
+    <version>0.0.1</version>
+    <packaging>war</packaging>
+    <name>web</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.xy.wwoa</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xy.wwoa</groupId>
+            <artifactId>employee</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xy.wwoa</groupId>
+            <artifactId>approval</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xy.wwoa</groupId>
+            <artifactId>setting</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <!-- 打包war使用 -->
+                <targetPath>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/lib/
+                </targetPath>
+                <includes>
+                    <include>**/*.jar</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>./</targetPath>
+            </resource>
+        </resources>
+    </build>
+
+</project>

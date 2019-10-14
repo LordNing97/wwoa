@@ -1,0 +1,43 @@
+package com.xy.wwoa.approval.api;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+/**
+ * @Author 陈璇
+ * @Description BecomeWorkerModal
+ * @date 2019/9/4 9:59
+ */
+@Getter
+@ToString
+@Builder
+public class BecomeWorkerModal {
+
+    private Integer id;
+    private String approvalNumber;
+    private String organizationName;
+    private String oldJobName;
+    private String newJobName;
+    private String telephone;
+    private LocalDateTime positiveTime;
+    private String actualApplicantName;
+    private String workShow;
+    private String performance;
+    private String remark;
+    private LocalDateTime entryTime;
+    private String jobName;
+    private LocalDateTime probationTime;
+    private BigDecimal formalSalary;
+    private BigDecimal probationSalary;
+    private String takeOfficeCity;
+    private Float insuranceCardinalNumber;
+    private LocalDateTime maturityTime;
+    private Integer probationDate;
+    private String contractTypeName;
+    private String idcard;
+
+}

@@ -1,0 +1,73 @@
+package com.xy.wwoa.web.controller;
+
+import com.xy.wwoa.common.api.Result;
+import com.xy.wwoa.common.api.ResultCode;
+import com.xy.wwoa.common.exception.FileException;
+import com.xy.wwoa.common.util.FileUploadUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.NotNull;
+
+/**
+ * @Author leisurexi
+ * @Description
+ * @Date 2019/9/3
+ * @Time 15:21
+ */
+@RestController
+@RequestMapping("file")
+@Api(value = "上传文件接口", produces = "application/json")
+@Validated
+public class UploadFileController {
+
+    @ApiOperation(value = "上传图片", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "files", value = "图片", dataType = "file", paramType = "query"),
+    })
+    @PostMapping("uploadPhoto")
+    public Result<String> uploadPhoto(@NotNull MultipartFile[] files) {
+        String paths = "";
+        for (MultipartFile file : files) {
+            //判断文件类型
+            if (!FileUploadUtil.checkImageFileType(file.getOriginalFilename())) {
+                throw new FileException(ResultCode.FILE_TYPE_ERROR);
+            }
+            //判断文件大小
+            if (FileUploadUtil.checkImageFileSize(file.getSize())) {
+                throw new FileException(ResultCode.FILE_SIZE_OUT);
+            }
+            String url = FileUploadUtil.saveImageFile(file);
+            paths += url + ",";
+        }
+        paths = paths.length() > 0 ? paths.substring(0, paths.length() - 1) : paths;
+        return Result.<String>builder().data(paths).build();
+    }
+
+    @ApiOperation(value = "上传文件（非图片）", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "files", value = "文件", dataType = "file", paramType = "query"),
+    })
+    @PostMapping("uploadFile")
+    public Result<String> uploadFile(@NotNull MultipartFile[] files) {
+        String paths = "";
+        for (MultipartFile file : files) {
+            //判断文件大小
+            if (FileUploadUtil.checkFileSize(file.getSize())) {
+                throw new FileException(ResultCode.FILE_SIZE_OUT);
+            }
+            String url = FileUploadUtil.saveFile(file);
+            paths += url + ",";
+        }
+        paths = paths.length() > 0 ? paths.substring(0, paths.length() - 1) : paths;
+        return Result.<String>builder().data(paths).build();
+    }
+
+}

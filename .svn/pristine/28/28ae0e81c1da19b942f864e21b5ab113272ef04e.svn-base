@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.employee.mapper.EmployeeInformationMapper">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.xy.wwoa.employee.model.EmployeeInformation">
+        insert into wwoa_employee_information(name, organizationId, jobId, takeOfficeCity, entryTime, telephone, probationTime, probationSalary, formalSalary,
+        insuranceCardinalType, insuranceCardinalNumber, contractTypeId, contractTime, positive) values(#{name}, #{organizationId}, #{jobId}, #{takeOfficeCity}, #{entryTime}, #{telephone}, #{probationTime},
+        #{probationSalary}, #{formalSalary}, #{insuranceCardinalType}, #{insuranceCardinalNumber}, #{contractTypeId}, #{contractTime}, 0)
+    </insert>
+
+    <update id="modify">
+        update wwoa_employee_information set sex = #{sex}, nation = #{nation}, birthday = #{birthday}, idCard = #{idCard}, registeredResidence = #{registeredResidence},
+        politicalAppearance = #{politicalAppearance}, maritalStatus = #{maritalStatus}, weixinNo = #{weixinNo}, email = #{email}, selfEvaluation = #{selfEvaluation},
+        certificateAndSkills = #{certificateAndSkills}, familyAddress = #{familyAddress}, presentAddress = #{presentAddress}, emergencyContactName = #{emergencyContactName},
+        emergencyContactPhone = #{emergencyContactPhone}, educationStatusIds = #{educationStatusIds}, familyStatusIds = #{familyStatusIds}, jobResumeIds = #{jobResumeIds},
+        employeeId = #{employeeId} where id = #{id}
+    </update>
+
+    <select id="findByTelephone" resultType="com.xy.wwoa.employee.model.EmployeeInformation">
+        select top 1 * from wwoa_employee_information where telephone = #{telephone}
+    </select>
+
+    <select id="findById" resultType="com.xy.wwoa.employee.model.EmployeeInformation">
+        select employee_information.*, organization.organizationName, province.provinceName as jobName, contract_type.name as contractTypeName
+        from wwoa_employee_information as employee_information
+        left outer join ww_organization as organization on employee_information.organizationId = organization.id
+        left outer join ww_province as province on employee_information.jobId = province.id
+        left outer join wwoa_contract_type as contract_type on employee_information.contractTypeId = contract_type.id
+        where employee_information.id = #{id}
+    </select>
+
+    <select id="findByEmployeeId" resultType="com.xy.wwoa.employee.model.EmployeeInformation">
+        select employee_information.*, organization.organizationName, province.provinceName as jobName, contract_type.name as contractTypeName
+        from wwoa_employee_information as employee_information
+        left outer join ww_organization as organization on employee_information.organizationId = organization.id
+        left outer join ww_province as province on employee_information.jobId = province.id
+        left outer join wwoa_contract_type as contract_type on employee_information.contractTypeId = contract_type.id
+        where employee_information.employeeId = #{employeeId}
+    </select>
+
+    <update id="updateEmployeeBecomeWorker">
+        update wwoa_employee_information set jobId = #{jobId}, positive = #{positive}, positiveTime = #{positiveTime} where employeeId = #{employeeId}
+    </update>
+
+</mapper>

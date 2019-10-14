@@ -1,0 +1,33 @@
+package com.xy.wwoa.approval.model;
+
+import com.xy.wwoa.employee.model.Employee;
+import com.xy.wwoa.employee.model.EmployeeInformation;
+import lombok.Data;
+import lombok.ToString;
+
+import java.time.LocalDateTime;
+
+/**
+ * @Author 陈璇
+ * @Description BecomeWorker
+ * @date 2019/9/2 16:05
+ */
+@Data
+@ToString
+public class BecomeWorker {
+
+    private Integer id;
+    private Integer employeeId;
+    private String workShow;
+    private String performance;
+    private String ccIds;
+    private Integer createUser;
+    private LocalDateTime createTime;
+    private String remark;
+    private String approvalNumber;
+
+    private String createUserName;
+    private Employee employee;
+    private EmployeeInformation employeeInformation;
+
+}

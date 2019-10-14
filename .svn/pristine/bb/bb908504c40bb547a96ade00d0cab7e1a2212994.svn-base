@@ -1,0 +1,164 @@
+package com.xy.wwoa.common.exception;
+
+import com.xy.wwoa.common.api.Result;
+import com.xy.wwoa.common.api.ResultCode;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.internal.engine.path.PathImpl;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.Set;
+
+@RestControllerAdvice
+@Slf4j
+public class GlobalExceptionTranslator {
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public Result handleError(MissingServletRequestParameterException e) {
+        log.warn("Missing Request Parameter", e);
+        String message = String.format("Missing Request Parameter: %s", e.getParameterName());
+        return Result
+                .builder()
+                .code(ResultCode.PARAM_MISS.getCode())
+                .msg(message)
+                .build();
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public Result handleError(MethodArgumentTypeMismatchException e) {
+        log.warn("Method Argument Type Mismatch", e);
+        String message = String.format("Method Argument Type Mismatch: %s", e.getName());
+        return Result
+                .builder()
+                .code(ResultCode.PARAM_TYPE_ERROR.getCode())
+                .msg(message)
+                .build();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Result handleError(MethodArgumentNotValidException e) {
+        log.warn("Method Argument Not Valid", e);
+        BindingResult result = e.getBindingResult();
+        FieldError error = result.getFieldError();
+        String message = String.format("%s:%s", error.getField(), error.getDefaultMessage());
+        return Result
+                .builder()
+                .code(ResultCode.PARAM_VALID_ERROR.getCode())
+                .msg(message)
+                .build();
+    }
+
+    @ExceptionHandler(BindException.class)
+    public Result handleError(BindException e) {
+        log.warn("Bind Exception", e);
+        FieldError error = e.getFieldError();
+        String message = String.format("%s:%s", error.getField(), error.getDefaultMessage());
+        return Result
+                .builder()
+                .code(ResultCode.PARAM_BIND_ERROR.getCode())
+                .msg(message)
+                .build();
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public Result handleError(ConstraintViolationException e) {
+        log.warn("Constraint Violation", e);
+        Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+        ConstraintViolation<?> violation = violations.iterator().next();
+        String path = ((PathImpl) violation.getPropertyPath()).getLeafNode().getName();
+        String message = String.format("%s:%s", path, violation.getMessage());
+        return Result
+                .builder()
+                .code(ResultCode.PARAM_VALID_ERROR.getCode())
+                .msg(message)
+                .build();
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public Result handleError(NoHandlerFoundException e) {
+        log.error("404 Not Found", e);
+        return Result
+                .builder()
+                .code(ResultCode.NOT_FOUND.getCode())
+                .msg(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public Result handleError(HttpMessageNotReadableException e) {
+        log.error("Message Not Readable", e);
+        return Result
+                .builder()
+                .code(ResultCode.MSG_NOT_READABLE.getCode())
+                .msg(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public Result handleError(HttpRequestMethodNotSupportedException e) {
+        log.error("Request Method Not Supported", e);
+        return Result
+                .builder()
+                .code(ResultCode.METHOD_NOT_SUPPORTED.getCode())
+                .msg(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public Result handleError(HttpMediaTypeNotSupportedException e) {
+        log.error("Media Type Not Supported", e);
+        return Result
+                .builder()
+                .code(ResultCode.MEDIA_TYPE_NOT_SUPPORTED.getCode())
+                .msg(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(JSONException.class)
+    public Result handleError(JSONException e) {
+        log.error("JSON Exception", e);
+        return Result
+                .builder(e.getResultCode())
+                .msg(e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(ServiceException.class)
+    public Result handleError(ServiceException e) {
+        log.error("Service Exception", e);
+        return Result
+                .builder(e.getResultCode())
+                .build();
+    }
+
+//    @ExceptionHandler(PermissionDeniedException.class)
+//    public BaseResponse handleError(PermissionDeniedException e) {
+//        log.error("Permission Denied", e);
+//        return BaseResponse
+//                .builder()
+//                .code(e.getResultCode())
+//                .message(e.getMessage())
+//                .build();
+//    }
+
+    @ExceptionHandler(Throwable.class)
+    public Result handleError(Throwable e) {
+        log.error("Internal Server Error", e);
+        return Result
+                .builder()
+                .code(ResultCode.INTERNAL_SERVER_ERROR.getCode())
+                .msg(e.getMessage())
+                .build();
+    }
+}

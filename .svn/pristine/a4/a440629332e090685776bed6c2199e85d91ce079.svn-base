@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.approval.mapper.InterchangeableApprovalMapper">
+
+    <insert id="save">
+        insert into wwoa_interchangeable_approval values(#{approvalNumber}, #{organizationId}, #{jobId}, #{applyContent}, #{approvalDetail},
+        #{imgs}, #{approverIds}, #{ccIds}, #{createUser}, #{createTime}, #{status}, #{remark})
+    </insert>
+
+    <select id="findByApprovalNumber" resultType="com.xy.wwoa.approval.model.InterchangeableApproval">
+        select interchangeable_approval.*, employee.employeeName as createUserName from wwoa_interchangeable_approval as interchangeable_approval
+        left outer join ww_employee as employee on interchangeable_approval.createUser = employee.id
+        where interchangeable_approval.approvalNumber = #{approvalNumber}
+    </select>
+
+    <select id="listInterchangeableApproval" resultType="com.xy.wwoa.approval.model.InterchangeableApproval">
+        select * from (
+        select top ${size} interchangeable_approval.*, ROW_NUMBER() OVER(Order by interchangeable_approval.id) as rowNumber
+        from wwoa_interchangeable_approval as interchangeable_approval
+        left join ww_employee as employee on interchangeable_approval.createUser = employee.id
+        <where>
+            <if test="organizationId != null">
+                and employee.organizationId = #{organizationId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee.employeeName like '%' + #{employeeName} + '%'
+            </if>
+            <if test="applyContent != null and applyContent != ''">
+                and interchangeable_approval.applyContent like '%' + #{applyContent} + '%'
+            </if>
+        </where>
+        ) as T where rowNumber > #{page} ORDER BY rowNumber
+    </select>
+
+    <select id="countInterchangeableApproval" resultType="java.lang.Long">
+        select count(*) from wwoa_interchangeable_approval as interchangeable_approval
+        left join ww_employee as employee on interchangeable_approval.createUser = employee.id
+        <where>
+            <if test="organizationId != null">
+                and employee.organizationId = #{organizationId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee.employeeName like '%' + #{employeeName} + '%'
+            </if>
+            <if test="applyContent != null and applyContent != ''">
+                and interchangeable_approval.applyContent like '%' + #{applyContent} + '%'
+            </if>
+        </where>
+    </select>
+
+</mapper>

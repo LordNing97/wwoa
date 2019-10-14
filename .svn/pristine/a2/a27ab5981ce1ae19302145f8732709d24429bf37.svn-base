@@ -1,0 +1,121 @@
+package com.xy.wwoa.employee.util;
+
+import cn.hutool.http.HttpUtil;
+import com.xy.wwoa.common.api.ResultCode;
+import com.xy.wwoa.common.util.JSONUtil;
+import com.xy.wwoa.employee.exception.LoginAccessException;
+import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @Author leisurexi
+ * @Description
+ * @Date 2019/8/29
+ * @Time 15:27
+ */
+@Slf4j
+public class WechatUtil {
+
+    private WechatUtil() {
+    }
+
+    private static final String ACCESS_TOKEN_URL = "https://qyapi.weixin.qq.com/cgi-bin/gettoken";
+    private static final String USER_ID_URL = "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo";
+    private static final String SEND_MESSAGE_URL = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=";
+    private static final String CORP_ID = "wx8ecbfde1d8062451";
+    private static final String LOGIN_SECRET = "oi4NZr-rG1-Q0BZr6CO814rEXUAFdbjG8zYhXEIaFwk";
+    private static final String SEND_MESSAGE_SECRET = "5SEYzfhpUNCGZvISKEPsXqeuq3OA4B-L-LgTH7jac9Y";
+    private static AccessToken loginToken;
+    private static AccessToken sendMessageToken;
+
+    private static AccessToken getToken(String secret) {
+        Map<String, Object> paramMap = new HashMap<>(2);
+        paramMap.put("corpid", CORP_ID);
+        paramMap.put("corpsecret", secret);
+        String result = HttpUtil.get(ACCESS_TOKEN_URL, paramMap, 10000);
+        log.info("获取access_token结果: {}", result);
+        Map<String, Object> resultMap = JSONUtil.parseObject(result, Map.class);
+        if (resultMap.get("access_token") != null) {
+            loginToken = new AccessToken((String) resultMap.get("access_token"), LocalDateTime.now().plusHours(1));
+            return loginToken;
+        }
+        throw new LoginAccessException(ResultCode.Login_ERROR);
+    }
+
+    private static String getLoginToken() {
+        if (loginToken == null || LocalDateTime.now().compareTo(loginToken.getExpireTime()) > 0) {
+            loginToken = getToken(LOGIN_SECRET);
+        }
+        return loginToken.getToken();
+    }
+
+    private static String getSendMessageToken() {
+        if (sendMessageToken == null || LocalDateTime.now().compareTo(sendMessageToken.getExpireTime()) > 0) {
+            sendMessageToken = getToken(SEND_MESSAGE_SECRET);
+        }
+        return sendMessageToken.getToken();
+    }
+
+    public static String getUserId(String code) {
+        String access_token = getLoginToken();
+        Map<String, Object> paramMap = new HashMap<>(2);
+        paramMap.put("access_token", access_token);
+        paramMap.put("code", code);
+        String result = HttpUtil.get(USER_ID_URL, paramMap, 10000);
+        log.info("微信登陆结果: {}", result);
+        Map<String, Object> resultMap = JSONUtil.parseObject(result, Map.class);
+        if (resultMap.get("UserId") != null) {
+            return (String) resultMap.get("UserId");
+        }
+        throw new LoginAccessException(ResultCode.Login_ERROR);
+    }
+
+    //发送转正消息
+    public static void sendTurnPositiveMessage(PhotoMessage photoMessage) {
+        String access_token = getSendMessageToken();
+        Articles articles = Articles.builder()
+                .title("试用期员工转正")
+                .description(photoMessage.getEmployeeName() + "员工可以转正啦!")
+                .url("http://wwoaapp.lizhongxian.com/pages/personnel/promotion?employeeId=" + photoMessage.getEmployeeId() + "&userId=" + photoMessage.getUserId())
+                .picurl("https://tttxphotos.oss-cn-beijing.aliyuncs.com/ww.png")
+                .build();
+        Map<String, Object> newsMap = new HashMap<>(1);
+        newsMap.put("articles", new Articles[]{articles});
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("touser", photoMessage.getTouser());
+        paramMap.put("toparty", photoMessage.getToparty());
+        paramMap.put("agentid", 0);
+        paramMap.put("msgtype", "news");
+        paramMap.put("news", newsMap);
+        paramMap.put("enable_id_trans", 0);
+        String result = HttpUtil.post(SEND_MESSAGE_URL + access_token, JSONUtil.toJsonString(paramMap), 10000);
+        log.info("微信发送图文消息结果: {}", result);
+    }
+
+    //发送合同续签消息
+    public static void sendContractRenewMessage(PhotoMessage photoMessage) {
+        String access_token = getSendMessageToken();
+        Articles articles = Articles.builder()
+                .title("员工合同续签")
+                .description(photoMessage.getEmployeeName() + "员工合同可以续签啦!")
+                .url("http://wwoaapp.lizhongxian.com/pages/personnel/contractRenewal?employeeId=" + photoMessage.getEmployeeId() + "&userId=" + photoMessage.getUserId())
+                .picurl("https://tttxphotos.oss-cn-beijing.aliyuncs.com/ww.png")
+                .build();
+        Map<String, Object> newsMap = new HashMap<>(1);
+        newsMap.put("articles", new Articles[]{articles});
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("touser", photoMessage.getTouser());
+        paramMap.put("toparty", photoMessage.getToparty());
+        paramMap.put("agentid", 0);
+        paramMap.put("msgtype", "news");
+        paramMap.put("news", newsMap);
+        paramMap.put("enable_id_trans", 0);
+        String result = HttpUtil.post(SEND_MESSAGE_URL + access_token, JSONUtil.toJsonString(paramMap), 10000);
+        log.info("微信发送图文消息结果: {}", result);
+    }
+
+
+}

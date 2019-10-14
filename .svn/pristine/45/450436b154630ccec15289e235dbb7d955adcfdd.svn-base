@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.approval.mapper.BecomeWorkerMapper">
+
+    <insert id="save">
+        insert into wwoa_become_worker values(#{employeeId},#{workShow},#{performance},#{ccIds},#{createUser},#{createTime},#{remark},#{approvalNumber})
+    </insert>
+
+    <select id="findByApprovalNumber" resultType="com.xy.wwoa.approval.model.BecomeWorker">
+        select wwoa_become_worker.*, employee.employeeName as createUserName
+        from wwoa_become_worker as wwoa_become_worker
+        left outer join ww_employee as employee on wwoa_become_worker.createUser = employee.id
+        where wwoa_become_worker.approvalNumber = #{approvalNumber}
+    </select>
+
+    <select id="listBecomeWorker" resultType="com.xy.wwoa.approval.model.BecomeWorker">
+        select * from (
+        select top ${size} become_worker.*, ROW_NUMBER() OVER(Order by become_worker.id) as rowNumber
+        from wwoa_become_worker as become_worker
+        left join ww_employee as employee on become_worker.createUser = employee.id
+        <where>
+            <if test="organizationId != null">
+                and employee.organizationId = #{organizationId}
+            </if>
+            <if test="jobId != null">
+                and employee.jobId = #{jobId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee.employeeName like '%' + #{employeeName} + '%'
+            </if>
+            <if test="idcard != null and idcard != ''">
+                and employee.idcard like '%' + #{idcard} + '%'
+            </if>
+        </where>
+        ) as T where rowNumber > #{page} ORDER BY rowNumber
+    </select>
+
+    <select id="countBecomeWorker" resultType="java.lang.Long">
+        select count(*) from wwoa_become_worker as become_worker
+        left join ww_employee as employee on become_worker.createUser = employee.id
+        <where>
+            <if test="organizationId != null">
+                and employee.organizationId = #{organizationId}
+            </if>
+            <if test="jobId != null">
+                and employee.jobId = #{jobId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee.employeeName like '%' + #{employeeName} + '%'
+            </if>
+            <if test="idcard != null and idcard != ''">
+                and employee.idcard like '%' + #{idcard} + '%'
+            </if>
+        </where>
+    </select>
+
+    <select id="findById" resultType="com.xy.wwoa.approval.model.BecomeWorker">
+        select * from wwoa_become_worker where id = #{id}
+    </select>
+
+</mapper>

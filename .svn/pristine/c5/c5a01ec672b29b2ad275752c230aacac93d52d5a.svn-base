@@ -1,0 +1,25 @@
+spring.datasource.url=jdbc:sqlserver://192.168.1.99:1433;DatabaseName=Promise
+spring.datasource.username=sa
+spring.datasource.password=a1s2d3f4
+spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+# 使用 hikari 数据源
+spring.datasource.type=com.zaxxer.hikari.HikariDataSource
+# 开启自动提交
+spring.datasource.hikari.auto-commit=true
+# 配置获取连接等待超时的时间
+spring.datasource.hikari.connection-timeout=30000
+# 连接在池中空闲的最长时间
+spring.datasource.hikari.idle-timeout=600000
+# 池中连接的最长生命周期
+spring.datasource.hikari.max-lifetime=1800000
+# 从池中给出连接之前执行的查询，以验证与数据库的连接是否仍然存在
+spring.datasource.hikari.connection-test-query=SELECT 1
+# 最小空闲连接数
+spring.datasource.hikari.minimum-idle=0
+# 连接池到达的最大大小，包括空闲和正在使用的连接
+spring.datasource.hikari.maximum-pool-size=20
+# 连接池的名称
+spring.datasource.hikari.pool-name=XyHikariCP
+
+

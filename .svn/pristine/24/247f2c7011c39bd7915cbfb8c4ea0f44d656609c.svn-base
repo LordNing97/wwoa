@@ -1,0 +1,123 @@
+package com.xy.wwoa.employee.controller;
+
+import com.xy.wwoa.common.api.Result;
+import com.xy.wwoa.common.api.ResultCode;
+import com.xy.wwoa.employee.api.ApproverModel;
+import com.xy.wwoa.employee.api.EmployeeModel;
+import com.xy.wwoa.employee.api.EmployeeProvinceModel;
+import com.xy.wwoa.employee.exception.LoginAccessException;
+import com.xy.wwoa.employee.model.Employee;
+import com.xy.wwoa.employee.service.EmployeeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
+
+import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+
+/**
+ * @Author 陈璇
+ * @Description EmployeeController
+ * @date 2019/8/27 14:57
+ */
+@RestController
+@RequestMapping("employee")
+@Api(value = "员工接口", produces = "application/json")
+@Validated
+public class EmployeeController {
+
+    @Resource
+    private EmployeeService employeeService;
+
+    @ApiOperation(value = "登录", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "telephone", value = "手机号", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "string", paramType = "query"),
+    })
+    @GetMapping("login")
+    public Result<Employee> login(@NotBlank(message = "请输入手机号") String telephone, @NotBlank(message = "请输入密码") String password) {
+        Employee employee = employeeService.login(telephone, password);
+        if (employee == null) {
+            throw new LoginAccessException(ResultCode.TELEPHONE_OR_PWD_ERROR);
+        }
+        return Result.<Employee>builder()
+                .data(employee)
+                .build();
+    }
+
+    @ApiOperation(value = "微信登录", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", value = "微信获取用户信息的验证码", required = true, dataType = "string", paramType = "query"),
+    })
+    @GetMapping("wechatLogin")
+    public Result<Employee> wechatLogin(@NotBlank String code) {
+        Employee employee = employeeService.wechatLogin(code);
+        return Result.<Employee>builder()
+                .data(employee)
+                .build();
+    }
+
+    @ApiOperation(value = "用id获取员工信息", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "微信获取用户信息的验证码", required = true, dataType = "string", paramType = "query"),
+    })
+    @GetMapping("getUserById")
+    public Result<Employee> getUserById(@NotNull Integer userId) {
+        Employee employee = employeeService.getById(userId);
+        return Result.<Employee>builder()
+                .data(employee)
+                .build();
+    }
+
+    @ApiOperation(value = "根据部门和岗位获取员工信息", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "organizationId", value = "部门id", required = true, dataType = "int", paramType = "query"),
+    })
+    @GetMapping("listEmployeeForJob")
+    public Result<EmployeeProvinceModel> listEmployeeForJob(@NotNull(message = "请选择部门") Integer organizationId) {
+        return Result.<EmployeeProvinceModel>builder()
+                .data(employeeService.listEmployeeForJob(organizationId))
+                .build();
+    }
+
+    @ApiOperation(value = "获取审批人信息", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "organizationId", value = "部门id", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "approvalTypeId", value = "审批类型id", required = true, dataType = "int", paramType = "query"),
+    })
+    @GetMapping("getApprover")
+    public Result<ApproverModel> getApprover(@NotNull(message = "请选择部门") Integer organizationId, @NotNull Integer approvalTypeId) {
+        return Result.<ApproverModel>builder()
+                .data(employeeService.getApprover(organizationId, approvalTypeId))
+                .build();
+    }
+
+    @ApiOperation(value = "获取抄送人信息", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "organizationId", value = "部门id", required = true, dataType = "int", paramType = "query"),
+    })
+    @GetMapping("getCc")
+    public Result<List<EmployeeModel>> getCc(@NotNull(message = "请选择部门") Integer organizationId) {
+        return Result.<List<EmployeeModel>>builder()
+                .data(employeeService.getCc(organizationId))
+                .build();
+    }
+
+    @ApiOperation(value = "根据部门id获取员工", httpMethod = "GET")
+    @GetMapping("findByOrganizationId")
+    public Result findByOrganizationId(@ApiIgnore Employee employee) {
+        return Result.builder()
+                .data(employeeService.findByOrganizationId(employee.getId()))
+                .build();
+    }
+
+
+}

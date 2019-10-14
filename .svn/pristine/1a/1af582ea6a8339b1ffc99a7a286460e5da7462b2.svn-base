@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.employee.mapper.EmployeeMapper">
+    <!--  根据部门和岗位获取员工信息  -->
+    <select id="findAllByJobIdAndOrganizationId" resultType="com.xy.wwoa.employee.model.Employee">
+        select * from ww_employee where isDel = 0 and jobId = #{jobId} and organizationId = #{organizationId} and status &lt; 3
+    </select>
+
+    <!--  根据多个id查询name  -->
+    <select id="findNameByIds" resultType="java.lang.String">
+        select employeeName from ww_employee where id in(${ids}) and status &lt; 3
+    </select>
+
+    <!--  根据多个id查询  -->
+    <select id="findByIds" resultType="com.xy.wwoa.employee.model.Employee">
+        select * from ww_employee where id in(${ids}) and status &lt; 3
+    </select>
+
+    <!--  根据部门id查询  -->
+    <select id="findByOrganizationId" resultType="com.xy.wwoa.employee.model.Employee">
+        select * from ww_employee where isDel = 0 and organizationId = #{organizationId} and status &lt; 3
+    </select>
+
+    <select id="findByOpenId" resultType="com.xy.wwoa.employee.model.Employee">
+        select top 1 * from ww_employee where isDel = 0 and newOpenId = #{openId} and status &lt; 3
+    </select>
+
+    <select id="findById" resultType="com.xy.wwoa.employee.model.Employee">
+        select top 1 employee.*, organization.organizationName, province.provinceName as jobName
+        from ww_employee as employee
+        left outer join ww_organization as organization on employee.organizationId = organization.id
+        left outer join ww_province as province on employee.jobId = province.id
+        where employee.id = #{id}
+    </select>
+
+    <select id="findAllPersonnelMatters" resultType="java.lang.String">
+        select STUFF(( select  ',' + convert(varchar, id) from (select * from ww_employee where jobId = 17 and organizationId = #{organizationId} and isDel = 0 and status &lt; 3) T for XML PATH('')), 1, 1, '') as ids
+    </select>
+
+    <select id="login" resultType="com.xy.wwoa.employee.model.Employee">
+        select top 1 * from ww_employee where telephone = #{telephone} and password = #{password} and isDel = 0
+    </select>
+
+    <update id="modifyStatus">
+        update ww_employee set status = #{status} where id = #{id}
+    </update>
+
+    <update id="updateEmployeeBecomeWorker">
+        update ww_employee set jobId = #{jobId} where id = #{id}
+    </update>
+
+</mapper>

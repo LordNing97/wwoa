@@ -1,0 +1,47 @@
+package com.xy.wwoa.approval.request;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+
+/**
+ * @Author 陈璇
+ * @Description SaveBecomeWorkerRequest
+ * @date 2019/9/2 16:41
+ */
+@Data
+@ToString
+@ApiModel(value = "保存转正信息审批参数对象")
+public class SaveBecomeWorkerRequest {
+
+    @ApiModelProperty(name = "approvalNumber", value = "审批编号", required = true, dataType = "string")
+    @NotBlank
+    private String approvalNumber;
+    @ApiModelProperty(name = "employeeId", value = "实际申请人", required = true, dataType = "int")
+    @NotNull(message = "请选择实际申请人")
+    private Integer employeeId;
+    @ApiModelProperty(name = "jobId", value = "岗位id", required = true, dataType = "int")
+    @NotNull(message = "请选择岗位")
+    private Integer jobId;
+    @ApiModelProperty(name = "workShow", value = "工作表现", required = true, dataType = "string")
+    @NotBlank(message = "请输入工作表现")
+    @Length(min = 1, max = 200, message = "工作表现不能超过200个字符")
+    private String workShow;
+    @ApiModelProperty(name = "performance", value = "业绩", required = true, dataType = "string")
+    @NotBlank(message = "请输入业绩")
+    @Length(min = 1, max = 200, message = "业绩不能超过200个字符")
+    private String performance;
+    @ApiModelProperty(name = "positiveTime", value = "转正时间", required = true, dataType = "string")
+    @NotNull(message = "请选择转正时间")
+    private LocalDateTime positiveTime;
+    @ApiModelProperty(name = "employeeStatus", value = "是否转正(0 不予转正 1 转正)", required = true, dataType = "int")
+    @NotNull(message = "请选择是否转正")
+    private Integer employeeStatus;
+
+}

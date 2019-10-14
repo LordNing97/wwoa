@@ -1,0 +1,34 @@
+package com.xy.wwoa.approval.api;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+/**
+ * @Author 陈璇
+ * @Description PerformanceAppraisalModal
+ * @date 2019/9/4 9:44
+ */
+@Getter
+@ToString
+@Builder
+public class PerformanceAppraisalModal {
+
+    private Integer id;
+    private String approvalNumber;
+    private String organizationName;
+    private String lastWorkTask;
+    private String realityWorkTask;
+    private Integer taskCompleteRate;
+    private String lastWorkAppraisal;
+    private String workTask;
+    private String workPlan;
+    private String employeeName;
+    private LocalDateTime createTime;
+    private List<PerformanceAppraisalProcessesModal> performanceAppraisalProcessesModalList;
+
+}

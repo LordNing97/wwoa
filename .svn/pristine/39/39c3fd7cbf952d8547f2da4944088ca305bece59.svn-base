@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.wwoa.approval.mapper.EntryApprovalMapper">
+
+    <insert id="save">
+        insert into wwoa_entry_approval values(#{approvalNumber}, #{employeeInformationId}, #{specialRemark}, #{approverIds}, #{ccIds}, #{createUser},
+        #{createTime}, #{type}, #{status}, #{remark})
+    </insert>
+
+    <update id="modifyStatus">
+        update wwoa_entry_approval set status = #{status} where approvalNumber = #{approvalNumber}
+    </update>
+
+    <select id="findByApprovalNumber" resultType="com.xy.wwoa.approval.model.EntryApproval">
+        select entry_approval.*, employee.employeeName as createUserName
+        from wwoa_entry_approval as entry_approval
+        left outer join ww_employee as employee on entry_approval.createUser = employee.id
+        where entry_approval.approvalNumber = #{approvalNumber}
+    </select>
+
+    <select id="countEntryApproval" resultType="long">
+        select count(*) from wwoa_entry_approval as entry_approval left join wwoa_employee_information as employee_information
+        on entry_approval.employeeInformationId = employee_information.id
+        <where>
+            <if test="organizationId != null">
+                and employee_information.organizationId = #{organizationId}
+            </if>
+            <if test="jobId != null">
+                and employee_information.jobId = #{jobId}
+            </if>
+            <if test="employeeName != null">
+                and employee_information.name like '%' + #{employeeName} + '%'
+            </if>
+            <if test="telephone != null">
+                and employee_information.telephone like '%' + #{telephone} + '%'
+            </if>
+            <if test="status != null">
+                and entry_approval.status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="listEntryApproval" resultType="com.xy.wwoa.approval.model.EntryApproval">
+        select * from (
+            select top ${size} entry_approval.*, ROW_NUMBER() OVER(Order by entry_approval.id) as rowNumber
+            from wwoa_entry_approval as entry_approval left join wwoa_employee_information as employee_information
+            on entry_approval.employeeInformationId = employee_information.id
+            <where>
+                <if test="organizationId != null">
+                    and employee_information.organizationId = #{organizationId}
+                </if>
+                <if test="jobId != null">
+                    and employee_information.jobId = #{jobId}
+                </if>
+                <if test="employeeName != null">
+                    and employee_information.name like '%' + #{employeeName} + '%'
+                </if>
+                <if test="telephone != null">
+                    and employee_information.telephone like '%' + #{telephone} + '%'
+                </if>
+                <if test="status != null">
+                    and entry_approval.status = #{status}
+                </if>
+            </where>
+        ) as T where rowNumber > #{page} ORDER BY rowNumber
+    </select>
+
+</mapper>
